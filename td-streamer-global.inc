@@ -98,20 +98,23 @@ static stock bool:_SetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
 }
 
 
-static stock _CreateTextDraw(id) {
-    new data[E_TD_STREAMER_GLOBAL_DATA];
-    _GetTextDrawData(id, data);
-
+static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
     new string[1024];
     str_get(data[E_TD_STRING], string);
 
     data[E_TD_INTERNAL_ID] = TextDrawCreate(data[E_TD_POS_X], data[E_TD_POS_Y], string);
 
+    if (data[E_TD_INTERNAL_ID] == Text:INVALID_TEXT_DRAW) {
+        return 1;
+    }
+
+    TDStreamerID[data[E_TD_INTERNAL_ID]] = id;
+
     if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
         TextDrawFont(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
     }
 
-    _SetTextDrawData(id, data);
+    return 1;
 }
 
 
@@ -172,11 +175,13 @@ stock TDS_TextDrawShowForPlayer(playerid, Text:text) {
     }
 
     if (data[E_TD_INTERNAL_ID] == Text:INVALID_TEXT_DRAW) {
-        _CreateTextDraw(id);
+        _CreateTextDraw(id, data);
     }
 
     PA_Set(data[E_TD_VISIBLE], playerid, true);
     TextDrawShowForPlayer(playerid, data[E_TD_INTERNAL_ID]);
+
+    _GetTextDrawData(id, data);
     return 1;
 }
 
