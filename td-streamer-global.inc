@@ -83,7 +83,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
 
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    if (!_GetTextDrawData(_:clickedid, data) || !data[E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
+    if (!_GetTextDrawData(TDStreamerID[clickedid], data) || !data[E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
         return Y_HOOKS_BREAK_RETURN_0;
     }
 
