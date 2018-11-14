@@ -32,7 +32,7 @@ static TDStreamerID[Text:MAX_TEXT_DRAWS] = {-1, ...};
 
 forward bool:_IsValidTextDraw(id);
 forward bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]);
-forward bool:_SetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]);
+forward bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]);
 
 
 hook OnScriptInit() {
@@ -111,7 +111,7 @@ static stock bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
 }
 
 
-static stock bool:_SetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
+static stock bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]) {
     if (!_IsValidTextDraw(id)) {
         return false;
     }
@@ -410,3 +410,108 @@ stock TDS_IsTextDrawVisibleForPlayer(playerid, Text:text) {
     #define _ALS_IsTextDrawVisibleForPlayer
 #endif
 #define IsTextDrawVisibleForPlayer TDS_IsTextDrawVisibleForPlayer
+
+
+stock TDS_TextDrawSetString(Text:text, const string[]) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetString(Text:text, data[E_TD_INTERNAL_ID]);
+    }
+
+    str_set(data[E_TD_STRING], str_new(string));
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetString
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetString
+#endif
+#define TextDrawSetString TDS_TextDrawSetString
+
+
+stock TDS_TextDrawGetString(Text:text, string[], len = sizeof(string)) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    str_get(data[E_TD_STRING], string, len);
+    return 1;
+}
+
+#if defined _ALS_TextDrawGetString
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetString
+#endif
+#define TextDrawGetString TDS_TextDrawGetString
+
+
+stock TDS_TextDrawSetPos(Text:text, Float:x, Float:y) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_POS_X] = x;
+    data[E_TD_POS_Y] = y;
+
+    #if defined TextDrawSetPos
+        if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+            TextDrawSetPos(data[E_TD_INTERNAL_ID], x, y);
+        }
+    #elseif defined TextDrawSetPosition
+        if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+            TextDrawSetPosition(data[E_TD_INTERNAL_ID], x, y);
+        }
+    #endif
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetPos
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetPos
+#endif
+#define TextDrawSetPos TDS_TextDrawSetPos
+
+#if defined TextDrawSetPosition
+    #if defined _ALS_TextDrawSetPosition
+        #error TextDraw streamer must be the first library to hook any textdraw functions!
+    #else
+        #define _ALS_TextDrawSetPosition
+    #endif
+    #define TextDrawSetPosition TDS_TextDrawSetPos
+#endif
+
+
+stock TDS_TextDrawGetPos(Text:text, &Float:x, &Float:y) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    x = data[E_TD_POS_X];
+    y = data[E_TD_POS_Y];
+
+    return 1;
+}
+
+#if defined _ALS_TextDrawGetPos
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetPos
+#endif
+#define TextDrawGetPos TDS_TextDrawGetPos
