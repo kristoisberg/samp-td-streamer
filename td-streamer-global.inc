@@ -53,6 +53,29 @@ hook OnScriptExit() {
 }
 
 
+hook OnPlayerDisconnect(playerid, reason) {
+    new data[E_TD_STREAMER_GLOBAL_DATA];
+
+    for (new Text:id; id < Text:MAX_TEXT_DRAWS; id++) {
+        if (TDStreamerID[id] != -1) {
+            _GetTextDrawData(TDStreamerID[id], data);
+
+            if (PA_Get(data[E_TD_VISIBLE], playerid)) {
+                PA_Set(data[E_TD_VISIBLE], playerid, false);
+
+                if (!Bit_Count(data[E_TD_VISIBLE])) {
+                    _DestroyTextDraw(data);
+                }
+
+                _SetTextDrawData(TDStreamerID[id], data);
+            }
+        }
+    }
+
+    return Y_HOOKS_CONTINUE_RETURN_1;
+}
+
+
 hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
     if (clickedid == Text:INVALID_TEXT_DRAW) {
         return Y_HOOKS_CONTINUE_RETURN_1;
@@ -114,6 +137,86 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
         TextDrawFont(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
     }
 
+    if (data[E_TD_PROPERTIES][E_TD_COLOUR] != TDDefaultProperties[E_TD_COLOUR]) {
+        TextDrawColor(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_COLOUR]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_ALIGNMENT] != TDDefaultProperties[E_TD_ALIGNMENT]) {
+        TextDrawAlignment(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_ALIGNMENT]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE] != TDDefaultProperties[E_TD_SHADOW_SIZE]) {
+        TextDrawSetShadow(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH] != TDDefaultProperties[E_TD_OUTLINE_WIDTH]) {
+        TextDrawSetOutline(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR] != TDDefaultProperties[E_TD_BACKGROUND_COLOUR]) {
+        TextDrawBackgroundColor(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL] != TDDefaultProperties[E_TD_IS_PROPORTIONAL]) {
+        TextDrawSetProportional(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] != TDDefaultProperties[E_TD_IS_SELECTABLE]) {
+        TextDrawSetSelectable(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X] != TDDefaultProperties[E_TD_TEXT_SIZE_X] ||
+        data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y] != TDDefaultProperties[E_TD_TEXT_SIZE_Y]
+    ) {
+        TextDrawTextSize(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X], data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X] != TDDefaultProperties[E_TD_LETTER_SIZE_X] ||
+        data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y] != TDDefaultProperties[E_TD_LETTER_SIZE_Y]
+    ) {
+        TextDrawLetterSize(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X], data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_HAS_BOX] != TDDefaultProperties[E_TD_HAS_BOX]) {
+        TextDrawUseBox(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_HAS_BOX]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_BOX_COLOUR] != TDDefaultProperties[E_TD_BOX_COLOUR]) {
+        TextDrawBoxColor(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_BOX_COLOUR]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL] != TDDefaultProperties[E_TD_PREVIEW_MODEL]) {
+        TextDrawSetPreviewModel(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1] != TDDefaultProperties[E_TD_PREVIEW_VEHICLE_COLOUR_1] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2] != TDDefaultProperties[E_TD_PREVIEW_VEHICLE_COLOUR_2]
+    ) {
+        TextDrawSetPreviewVehCol(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1], data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X] != TDDefaultProperties[E_TD_PREVIEW_ROT_X] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y] != TDDefaultProperties[E_TD_PREVIEW_ROT_Y] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z] != TDDefaultProperties[E_TD_PREVIEW_ROT_Z] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM] != TDDefaultProperties[E_TD_PREVIEW_ZOOM]
+    ) {
+        TextDrawSetPreviewRot(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z], data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM]);
+    }
+
+    return 1;
+}
+
+
+static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
+    TDStreamerID[data[E_TD_INTERNAL_ID]] = -1;
+
+    TextDrawDestroy(data[E_TD_INTERNAL_ID]);
+
+    data[E_TD_INTERNAL_ID] = Text:INVALID_TEXT_DRAW;
     return 1;
 }
 
@@ -124,6 +227,7 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
     data[E_TD_STRING] = str_to_global(str_new(text));
     data[E_TD_INTERNAL_ID] = Text:INVALID_TEXT_DRAW;
     data[E_TD_PROPERTIES] = TDDefaultProperties;
+
     data[E_TD_POS_X] = x;
     data[E_TD_POS_Y] = y;
 
@@ -152,7 +256,18 @@ stock TDS_IsValidTextDraw(Text:text) {
 
 
 stock TDS_TextDrawDestroy(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
 
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        _DestroyTextDraw(data);
+    }
+
+    list_set(TDData, id, VAR_NULL);
+    return 1;
 }
 
 #if defined _ALS_TextDrawDestroy
@@ -181,7 +296,7 @@ stock TDS_TextDrawShowForPlayer(playerid, Text:text) {
     PA_Set(data[E_TD_VISIBLE], playerid, true);
     TextDrawShowForPlayer(playerid, data[E_TD_INTERNAL_ID]);
 
-    _GetTextDrawData(id, data);
+    _SetTextDrawData(id, data);
     return 1;
 }
 
@@ -191,3 +306,107 @@ stock TDS_TextDrawShowForPlayer(playerid, Text:text) {
     #define _ALS_TextDrawShowForPlayer
 #endif
 #define TextDrawShowForPlayer TDS_TextDrawShowForPlayer
+
+
+stock TDS_TextDrawHideForPlayer(playerid, Text:text) {
+    if (!IsPlayerConnected(playerid)) {
+        return 0;
+    }
+
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    PA_Set(data[E_TD_VISIBLE], playerid, false);
+    TextDrawHideForPlayer(playerid, data[E_TD_INTERNAL_ID]);
+
+    if (!Bit_Count(data[E_TD_VISIBLE])) {
+        _DestroyTextDraw(data);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawHideForPlayer
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawHideForPlayer
+#endif
+#define TextDrawHideForPlayer TDS_TextDrawHideForPlayer
+
+
+stock TDS_TextDrawShowForAll(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    if (data[E_TD_INTERNAL_ID] == Text:INVALID_TEXT_DRAW) {
+        _CreateTextDraw(id, data);
+    }
+
+    foreach (new playerid : Player) {
+        PA_Set(data[E_TD_VISIBLE], playerid, true);
+    }
+    
+    TextDrawShowForAll(data[E_TD_INTERNAL_ID]);
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawShowForAll
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawShowForAll
+#endif
+#define TextDrawShowForAll TDS_TextDrawShowForAll
+
+
+stock TDS_TextDrawHideForAll(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    PA_SetAll(data[E_TD_VISIBLE], false);
+    TextDrawHideForAll(data[E_TD_INTERNAL_ID]);
+
+    _DestroyTextDraw(data);
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawHideForAll
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawHideForAll
+#endif
+#define TextDrawHideForAll TDS_TextDrawHideForAll
+
+
+stock TDS_IsTextDrawVisibleForPlayer(playerid, Text:text) {
+    if (!IsPlayerConnected(playerid)) {
+        return 0;
+    }
+
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return PA_Get(data[E_TD_VISIBLE], playerid);
+}
+
+#if defined _ALS_IsTextDrawVisibleForPlayer
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_IsTextDrawVisibleForPlayer
+#endif
+#define IsTextDrawVisibleForPlayer TDS_IsTextDrawVisibleForPlayer

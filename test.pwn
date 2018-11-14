@@ -11,4 +11,8 @@ Test:Main() {
     ASSERT(id == Text:0);
     ASSERT(IsValidTextDraw(id) == 1);
     ASSERT(TextDrawShowForPlayer(INVALID_PLAYER_ID, id) == 0);
+    ASSERT(IsTextDrawVisibleForPlayer(INVALID_PLAYER_ID, id) == 0);
+    ASSERT(TextDrawHideForPlayer(INVALID_PLAYER_ID, id) == 0);
+    ASSERT(TextDrawDestroy(id) == 1);
+    ASSERT(IsValidTextDraw(id) == 0);
 }
