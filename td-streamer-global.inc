@@ -515,3 +515,670 @@ stock TDS_TextDrawGetPos(Text:text, &Float:x, &Float:y) {
     #define _ALS_TextDrawGetPos
 #endif
 #define TextDrawGetPos TDS_TextDrawGetPos
+
+
+stock TDS_TextDrawLetterSize(Text:text, Float:x, Float:y) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X] = x;
+    data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y] = y;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawLetterSize(data[E_TD_INTERNAL_ID], x, y);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawLetterSize
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawLetterSize
+#endif
+#define TextDrawLetterSize TDS_TextDrawLetterSize
+
+
+stock TDS_TextDrawGetLetterSize(Text:text, &Float:x, &Float:y) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    x = data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X];
+    y = data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y];
+
+    return 1;
+}
+
+#if defined _ALS_TextDrawGetLetterSize
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetLetterSize
+#endif
+#define TextDrawGetLetterSize TDS_TextDrawGetLetterSize
+
+
+stock TDS_TextDrawTextSize(Text:text, Float:x, Float:y) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X] = x;
+    data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y] = y;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawTextSize(data[E_TD_INTERNAL_ID], x, y);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawTextSize
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawTextSize
+#endif
+#define TextDrawTextSize TDS_TextDrawTextSize
+
+
+stock TDS_TextDrawGetTextSize(Text:text, &Float:x, &Float:y) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    x = data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X];
+    y = data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y];
+
+    return 1;
+}
+
+#if defined _ALS_TextDrawGetTextSize
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetTextSize
+#endif
+#define TextDrawGetTextSize TDS_TextDrawGetTextSize
+
+
+stock TDS_TextDrawColor(Text:text, color) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_COLOUR] = color;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawColor(data[E_TD_INTERNAL_ID], color);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawColor
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawColor
+#endif
+#define TextDrawColor TDS_TextDrawColor
+
+
+stock TDS_TextDrawGetColor(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_COLOR];
+}
+
+#if defined _ALS_TextDrawGetColor
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetColor
+#endif
+#define TextDrawGetColor TDS_TextDrawGetColor
+
+
+stock TDS_TextDrawBoxColor(Text:text, color) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_BOX_COLOUR] = color;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawBoxColor(data[E_TD_INTERNAL_ID], color);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawBoxColor
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawBoxColor
+#endif
+#define TextDrawBoxColor TDS_TextDrawBoxColor
+
+
+stock TDS_TextDrawGetBoxColor(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_BOX_COLOR];
+}
+
+#if defined _ALS_TextDrawGetBoxColor
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetBoxColor
+#endif
+#define TextDrawGetBoxColor TDS_TextDrawGetBoxColor
+
+
+stock TDS_TextDrawBackgroundColor(Text:text, color) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR] = color;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawBackgroundColor(data[E_TD_INTERNAL_ID], color);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawBackgroundColor
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawBackgroundColor
+#endif
+#define TextDrawBackgroundColor TDS_TextDrawBackgroundColor
+
+
+stock TDS_TextDrawGetBackgroundColor(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOR];
+}
+
+#if defined _ALS_TextDrawGetBackgroundColor
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetBackgroundColor
+#endif
+#define TextDrawGetBackgroundColor TDS_TextDrawGetBackgroundColor
+
+
+stock TDS_TextDrawSetShadow(Text:text, size) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR] = size;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetShadow(data[E_TD_INTERNAL_ID], size);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetShadow
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetShadow
+#endif
+#define TextDrawSetShadow TDS_TextDrawSetShadow
+
+
+stock TDS_TextDrawGetShadow(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE];
+}
+
+#if defined _ALS_TextDrawGetShadow
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetShadow
+#endif
+#define TextDrawGetShadow TDS_TextDrawGetShadow
+
+
+stock TDS_TextDrawSetOutline(Text:text, size) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH] = size;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetOutline(data[E_TD_INTERNAL_ID], size);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetOutline
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetOutline
+#endif
+#define TextDrawSetOutline TDS_TextDrawSetOutline
+
+
+stock TDS_TextDrawGetOutline(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH];
+}
+
+#if defined _ALS_TextDrawGetOutline
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetOutline
+#endif
+#define TextDrawGetOutline TDS_TextDrawGetOutline
+
+
+stock TDS_TextDrawFont(Text:text, font) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_FONT] = font;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawFont(data[E_TD_INTERNAL_ID], font);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawFont
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawFont
+#endif
+#define TextDrawFont TDS_TextDrawFont
+
+
+stock TDS_TextDrawGetFont(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_FONT];
+}
+
+#if defined _ALS_TextDrawGetFont
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetFont
+#endif
+#define TextDrawGetFont TDS_TextDrawGetFont
+
+
+stock TDS_TextDrawUseBox(Text:text, use) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_HAS_BOX] = !!use;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawUseBox(data[E_TD_INTERNAL_ID], use);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawUseBox
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawUseBox
+#endif
+#define TextDrawUseBox TDS_TextDrawUseBox
+
+
+stock TDS_TextDrawIsBox(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_HAS_BOX];
+}
+
+#if defined _ALS_TextDrawIsBox
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawIsBox
+#endif
+#define TextDrawIsBox TDS_TextDrawIsBox
+
+
+stock TDS_TextDrawSetProportional(Text:text, set) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL] = !!set;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetProportional(data[E_TD_INTERNAL_ID], set);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetProportional
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetProportional
+#endif
+#define TextDrawSetProportional TDS_TextDrawSetProportional
+
+
+stock TDS_TextDrawIsProportional(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL];
+}
+
+#if defined _ALS_TextDrawIsProportional
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawIsProportional
+#endif
+#define TextDrawIsProportional TDS_TextDrawIsProportional
+
+
+stock TDS_TextDrawSetSelectable(Text:text, set) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] = !!set;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetSelectable(data[E_TD_INTERNAL_ID], set);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetSelectable
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetSelectable
+#endif
+#define TextDrawSetSelectable TDS_TextDrawSetSelectable
+
+
+stock TDS_TextDrawIsSelectable(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE];
+}
+
+#if defined _ALS_TextDrawIsSelectable
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawIsSelectable
+#endif
+#define TextDrawIsSelectable TDS_TextDrawIsSelectable
+
+
+stock TDS_TextDrawAlignment(Text:text, alignment) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_ALIGNMENT] = alignment;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawAlignment(data[E_TD_INTERNAL_ID], alignment);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawAlignment
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawAlignment
+#endif
+#define TextDrawAlignment TDS_TextDrawAlignment
+
+
+stock TDS_TextDrawGetAlignment(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_ALIGNMENT];
+}
+
+#if defined _ALS_TextDrawGetAlignment
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetAlignment
+#endif
+#define TextDrawGetAlignment TDS_TextDrawGetAlignment
+
+
+stock TDS_TextDrawSetPreviewModel(Text:text, model) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL] = model;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetPreviewModel(data[E_TD_INTERNAL_ID], model);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetPreviewModel
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetPreviewModel
+#endif
+#define TextDrawSetPreviewModel TDS_TextDrawSetPreviewModel
+
+
+stock TDS_TextDrawGetPreviewModel(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL];
+}
+
+#if defined _ALS_TextDrawGetPreviewModel
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetPreviewModel
+#endif
+#define TextDrawGetPreviewModel TDS_TextDrawGetPreviewModel
+
+
+stock TDS_TextDrawSetPreviewRot(Text:text, Float:x, Float:y, Float:z, Float:zoom) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X] = x;
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y] = y;
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z] = z;
+
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM] = zoom;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetPreviewRot(data[E_TD_INTERNAL_ID], x, y, z, zoom);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetPreviewRot
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetPreviewRot
+#endif
+#define TextDrawSetPreviewRot TDS_TextDrawSetPreviewRot
+
+
+stock TDS_TextDrawGetPreviewRot(Text:text, &Float:x, &Float:y, &Float:z, &Float:zoom) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    x = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X];
+    y = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y];
+    z = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z];
+
+    zoom = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_ZOOM];
+
+    return 1;
+}
+
+#if defined _ALS_TextDrawGetPreviewRot
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetPreviewRot
+#endif
+#define TextDrawGetPreviewRot TDS_TextDrawGetPreviewRot
+
+
+stock TDS_TextDrawSetPreviewVehCol(Text:text, color1, color2) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1] = color1;
+    data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2] = color2;
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawSetPreviewVehCol(data[E_TD_INTERNAL_ID], color1, color2);
+    }
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetPreviewVehCol
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetPreviewVehCol
+#endif
+#define TextDrawSetPreviewVehCol TDS_TextDrawSetPreviewVehCol
+
+
+stock TDS_TextDrawGetPreviewVehCol(Text:text, &color1, &color2) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    color1 = data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1];
+    color2 = data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2];
+
+    return 1;
+}
+
+#if defined _ALS_TextDrawGetPreviewVehCol
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawGetPreviewVehCol
+#endif
+#define TextDrawGetPreviewVehCol TDS_TextDrawGetPreviewVehCol
