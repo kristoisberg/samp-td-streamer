@@ -391,7 +391,7 @@ stock TDS_TextDrawHideForAll(Text:text) {
         return 0;
     }
 
-    PA_SetAll(data[E_TD_VISIBLE], false);
+    Bit_SetAll(data[E_TD_VISIBLE], false);
     TextDrawHideForAll(data[E_TD_INTERNAL_ID]);
 
     _DestroyTextDraw(data);
@@ -437,7 +437,7 @@ stock TDS_TextDrawSetString(Text:text, const string[]) {
     }
 
     if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
-        TextDrawSetString(Text:text, data[E_TD_INTERNAL_ID]);
+        TextDrawSetString(data[E_TD_INTERNAL_ID], string);
     }
 
     str_set(data[E_TD_STRING], str_new(string));
@@ -660,7 +660,7 @@ stock TDS_TextDrawGetColor(Text:text) {
         return 0;
     }
 
-    return data[E_TD_PROPERTIES][E_TD_COLOR];
+    return data[E_TD_PROPERTIES][E_TD_COLOUR];
 }
 
 #if defined _ALS_TextDrawGetColor
@@ -703,7 +703,7 @@ stock TDS_TextDrawGetBoxColor(Text:text) {
         return 0;
     }
 
-    return data[E_TD_PROPERTIES][E_TD_BOX_COLOR];
+    return data[E_TD_PROPERTIES][E_TD_BOX_COLOUR];
 }
 
 #if defined _ALS_TextDrawGetBoxColor
@@ -746,7 +746,7 @@ stock TDS_TextDrawGetBackgroundColor(Text:text) {
         return 0;
     }
 
-    return data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOR];
+    return data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR];
 }
 
 #if defined _ALS_TextDrawGetBackgroundColor
@@ -1141,7 +1141,7 @@ stock TDS_TextDrawGetPreviewRot(Text:text, &Float:x, &Float:y, &Float:z, &Float:
     y = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y];
     z = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z];
 
-    zoom = data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_ZOOM];
+    zoom = data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM];
 
     return 1;
 }
