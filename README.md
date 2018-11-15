@@ -11,10 +11,22 @@ Simply install to your project:
 sampctl package install kristoisberg/samp-td-streamer
 ```
 
-Include in your code and begin using the library:
+To use the streamer with global textdraws, include the following file:
 
 ```pawn
-#include <samp-td-streamer>
+#include <td-streamer-global>
+```
+
+To use the streamer with per-player textdraws, include the following file:
+
+```pawn
+#include <td-streamer-player>
+```
+
+If you wish to use it with both, you can either include both of the previous files or simply include:
+
+```pawn
+#include <td-streamer>
 ```
 
 

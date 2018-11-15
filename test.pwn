@@ -1,5 +1,9 @@
 #include "td-streamer.inc"
 
+#define FIX_const 1
+#define MSELECT_MAX_ITEMS 400
+#include <mselect>
+
 #define RUN_TESTS
 #include <YSI-Core/y_testing>
 
@@ -162,4 +166,44 @@ Test:Player() {
     PlayerTextDrawGetPreviewVehCol(playerid, id, color1, color2);
 
     PlayerTextDrawDestroy(playerid, id);
+}
+
+
+MSelectCreate:example_ms(playerid)
+{
+	static
+		items_array[311] = {MSELECT_INVALID_MODEL_ID, ...},
+		items_count = 0;
+
+	if (items_count == 0) {
+		for (new i = 0; i <= sizeof(items_array); i++) {
+			if (i == 74) {
+				continue;
+			}
+
+			items_array[items_count] = i;
+			items_count++;
+		}
+	}
+
+	return MSelect_Open(playerid, MSelect:example_ms, items_array, items_count, .header = "Header");
+}
+
+
+MSelectResponse:example_ms(playerid, MSelectType:response, itemid, modelid)
+{
+	new string[144];
+	format(string, sizeof(string), "ID: %d | Type: %d | Item: %d | Model: %d",
+	       playerid, _:response, itemid, modelid);
+	SendClientMessage(playerid, -1, string);
+	return 1;
+}
+
+
+public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+    if (newkeys & KEY_SPRINT) {
+        MSelect_Show(playerid, MSelect:example_ms);
+    }
+
+    return 1;
 }
