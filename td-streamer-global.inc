@@ -15,7 +15,7 @@
 
 
 enum _:E_TD_STREAMER_GLOBAL_DATA {
-    GlobalString:E_TD_STRING,
+    String:E_TD_STRING,
     Text:E_TD_INTERNAL_ID,
     PlayerArray:E_TD_VISIBLE<MAX_PLAYERS>,
 
@@ -43,12 +43,21 @@ hook OnScriptInit() {
 
 
 hook OnScriptExit() {
-    for (new Text:id; id < Text:MAX_TEXT_DRAWS; id++) {
-        if (TDStreamerID[id] != -1) {
-            TextDrawDestroy(id);
+    new data[E_TD_STREAMER_GLOBAL_DATA];
+
+    for (new Iter:id = list_iter(TDData); iter_inside(id); iter_move_next(id)) {
+        if (!iter_sizeof(id)) {
+            continue;
         }
+
+        if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+            TextDrawDestroy(data[E_TD_INTERNAL_ID]);
+        }
+
+        str_delete(data[E_TD_STRING]);
     }
 
+    list_delete(TDData);
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
@@ -224,7 +233,7 @@ static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
 stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    data[E_TD_STRING] = str_to_global(str_new(text));
+    data[E_TD_STRING] = str_acquire(str_new(text));
     data[E_TD_INTERNAL_ID] = Text:INVALID_TEXT_DRAW;
     data[E_TD_PROPERTIES] = TDDefaultProperties;
 
@@ -266,6 +275,8 @@ stock TDS_TextDrawDestroy(Text:text) {
         _DestroyTextDraw(data);
     }
 
+    str_delete(data[E_TD_STRING]);
+
     list_set(TDData, id, VAR_NULL);
     return 1;
 }
@@ -293,10 +304,13 @@ stock TDS_TextDrawShowForPlayer(playerid, Text:text) {
         _CreateTextDraw(id, data);
     }
 
-    PA_Set(data[E_TD_VISIBLE], playerid, true);
-    TextDrawShowForPlayer(playerid, data[E_TD_INTERNAL_ID]);
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        PA_Set(data[E_TD_VISIBLE], playerid, true);
+        TextDrawShowForPlayer(playerid, data[E_TD_INTERNAL_ID]);
 
-    _SetTextDrawData(id, data);
+        _SetTextDrawData(id, data);
+    }
+
     return 1;
 }
 
@@ -349,13 +363,16 @@ stock TDS_TextDrawShowForAll(Text:text) {
         _CreateTextDraw(id, data);
     }
 
-    foreach (new playerid : Player) {
-        PA_Set(data[E_TD_VISIBLE], playerid, true);
-    }
-    
-    TextDrawShowForAll(data[E_TD_INTERNAL_ID]);
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        foreach (new playerid : Player) {
+            PA_Set(data[E_TD_VISIBLE], playerid, true);
+        }
+        
+        TextDrawShowForAll(data[E_TD_INTERNAL_ID]);
 
-    _SetTextDrawData(id, data);
+        _SetTextDrawData(id, data);
+    }
+
     return 1;
 }
 
