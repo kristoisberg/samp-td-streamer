@@ -14,7 +14,7 @@
 #include "td-streamer-internal.inc"
 
 
-enum _:E_TD_STREAMER_GLOBAL_DATA {
+static enum _:E_TD_STREAMER_GLOBAL_DATA {
     String:E_TD_STRING,
     Text:E_TD_INTERNAL_ID,
     PlayerArray:E_TD_VISIBLE<MAX_PLAYERS>,
@@ -27,7 +27,7 @@ enum _:E_TD_STREAMER_GLOBAL_DATA {
 
 
 static List:TDData;
-static TDStreamerID[Text:MAX_TEXT_DRAWS] = {-1, ...};
+static TDStreamerID[MAX_TEXT_DRAWS] = {-1, ...};
 
 
 forward bool:_IsValidTextDraw(id);
@@ -65,7 +65,7 @@ hook OnScriptExit() {
 hook OnPlayerDisconnect(playerid, reason) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    for (new Text:id; id < Text:MAX_TEXT_DRAWS; id++) {
+    for (new id; id < MAX_TEXT_DRAWS; id++) {
         if (TDStreamerID[id] != -1) {
             _GetTextDrawData(TDStreamerID[id], data);
 
@@ -90,17 +90,19 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
         return Y_HOOKS_CONTINUE_RETURN_1;
     }
 
-    if (TDStreamerID[clickedid] == -1) {
+    new id = TDStreamerID[_:clickedid];
+
+    if (id == -1) {
         return Y_HOOKS_BREAK_RETURN_0;
     }
 
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    if (!_GetTextDrawData(TDStreamerID[clickedid], data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
+    if (!_GetTextDrawData(id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
         return Y_HOOKS_BREAK_RETURN_0;
     }
 
-    clickedid = Text:TDStreamerID[clickedid];
+    clickedid = Text:id;
     return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
@@ -115,7 +117,7 @@ static stock bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
         return false;
     }
 
-    list_get_arr(TDData, id, data);
+    list_get_arr(TDData, id, data, sizeof(data));
     return true;
 }
 
@@ -140,7 +142,7 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
         return 1;
     }
 
-    TDStreamerID[data[E_TD_INTERNAL_ID]] = id;
+    TDStreamerID[_:data[E_TD_INTERNAL_ID]] = id;
 
     if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
         TextDrawFont(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
@@ -221,7 +223,7 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
 
 
 static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
-    TDStreamerID[data[E_TD_INTERNAL_ID]] = -1;
+    TDStreamerID[_:data[E_TD_INTERNAL_ID]] = -1;
 
     TextDrawDestroy(data[E_TD_INTERNAL_ID]);
 
