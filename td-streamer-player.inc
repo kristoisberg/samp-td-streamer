@@ -322,6 +322,7 @@ stock TDS_PlayerTextDrawShow(playerid, PlayerText:text) {
     if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
         data[E_TD_VISIBLE] = true;
 
+        PlayerTextDrawShow(playerid, data[E_TD_INTERNAL_ID]);
         _SetTextDrawData(playerid, id, data);
     }
     
