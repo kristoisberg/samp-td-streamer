@@ -95,3 +95,71 @@ Test:Global() {
     ASSERT(TextDrawDestroy(id) == 1);
     ASSERT(IsValidTextDraw(id) == 0);
 }
+
+
+Test:Player() {
+    new playerid = 0;
+    new PlayerText:id = CreatePlayerTextDraw(playerid, 10.0, 10.0, "test");
+
+    IsValidPlayerTextDraw(playerid, id);
+    PlayerTextDrawShow(playerid, id);
+    IsPlayerTextDrawVisible(playerid, id);
+    PlayerTextDrawHide(playerid, id);
+
+    new string[16];
+    PlayerTextDrawGetString(playerid, id, string);
+    PlayerTextDrawSetString(playerid, id, "asd");
+
+    new Float:x, Float:y, Float:z, Float:zoom;
+
+    PlayerTextDrawGetPos(playerid, id, x, y);
+    PlayerTextDrawSetPos(playerid, id, 100.0, 100.0);
+
+    PlayerTextDrawLetterSize(playerid, id, 1.0, 4.0);
+    PlayerTextDrawGetLetterSize(playerid, id, x, y);
+
+    PlayerTextDrawTextSize(playerid, id, 100.0, 100.0);
+    PlayerTextDrawGetTextSize(playerid, id, x, y);
+
+    PlayerTextDrawColor(playerid, id, 0x00FF00FF);
+    PlayerTextDrawGetColor(playerid, id);
+
+    PlayerTextDrawBoxColor(playerid, id, 0x00FF00FF);
+    PlayerTextDrawGetBoxColor(playerid, id);
+
+    PlayerTextDrawBackgroundColor(playerid, id, 0x00FF00FF);
+    PlayerTextDrawGetBackgroundColor(playerid, id);
+
+    PlayerTextDrawSetShadow(playerid, id, 3);
+    PlayerTextDrawGetShadow(playerid, id);
+
+    PlayerTextDrawSetOutline(playerid, id, 3);
+    PlayerTextDrawGetOutline(playerid, id);
+
+    PlayerTextDrawFont(playerid, id, 3);
+    PlayerTextDrawGetFont(playerid, id);
+
+    PlayerTextDrawAlignment(playerid, id, 3);
+    PlayerTextDrawGetAlignment(playerid, id);
+
+    PlayerTextDrawUseBox(playerid, id, 1);
+    PlayerTextDrawIsBox(playerid, id);
+
+    PlayerTextDrawSetProportional(playerid, id, 0);
+    PlayerTextDrawIsProportional(playerid, id);
+
+    PlayerTextDrawSetSelectable(playerid, id, 1);
+    PlayerTextDrawIsSelectable(playerid, id);
+
+    PlayerTextDrawSetPreviewModel(playerid, id, 12345);
+    PlayerTextDrawGetPreviewModel(playerid, id);
+
+    PlayerTextDrawSetPreviewRot(playerid, id, 10.0, 20.0, 30.0, 0.5);
+    PlayerTextDrawGetPreviewRot(playerid, id, x, y, z, zoom);
+
+    new color1, color2;
+    PlayerTextDrawSetPreviewVehCol(playerid, id, 15, 45);
+    PlayerTextDrawGetPreviewVehCol(playerid, id, color1, color2);
+
+    PlayerTextDrawDestroy(playerid, id);
+}
