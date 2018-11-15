@@ -5,7 +5,6 @@
 	"output": "test.amx",
 	"dependencies": [
 		"sampctl/samp-stdlib",
-		"Zeex/crashdetect",
 		"kristoisberg/PawnPlus",
 		"YSI-Coding/y_hooks",
 		"YSI-Data/y_playerarray",
