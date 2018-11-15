@@ -5,18 +5,33 @@
 	"output": "test.amx",
 	"dependencies": [
 		"sampctl/samp-stdlib",
-		"IllidanS4/PawnPlus",
+		"Zeex/crashdetect",
+		"kristoisberg/PawnPlus",
 		"YSI-Coding/y_hooks",
 		"YSI-Data/y_playerarray",
 		"YSI-Server/y_scriptinit",
-		"YSI-Data/y_iterate"
+		"YSI-Data/y_iterate",
+		"YSI-Core/y_utils"
 	],
 	"dev_dependencies": [
 		"YSI-Core/y_testing"
 	],
-	"build": {
-		"version": "3.10.8"
-	},
+	"builds": [
+		{
+			"name": "main",
+			"version": "3.10.8"
+		},
+		{
+			"name": "pre",
+			"version": "3.10.8",
+			"args": ["-l"]
+		},	
+		{
+			"name": "asm",
+			"version": "3.10.8",
+			"args": ["-a"]
+		}
+	],
 	"runtime": {
 		"version": "0.3.7",
 		"mode": "server",
