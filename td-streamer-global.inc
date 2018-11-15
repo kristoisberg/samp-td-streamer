@@ -764,7 +764,7 @@ stock TDS_TextDrawSetShadow(Text:text, size) {
         return 0;
     }
 
-    data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE] = size;
+    data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR] = size;
 
     if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
         TextDrawSetShadow(data[E_TD_INTERNAL_ID], size);
