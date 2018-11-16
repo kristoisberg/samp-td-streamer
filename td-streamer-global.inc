@@ -130,6 +130,10 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid) {
         return TDSG_OnPlayerClickTextDraw(playerid, clickedid);
     }
 
+    if (!(Text:0 <= clickedid < Text:MAX_TEXT_DRAWS)) {
+        return 0;
+    }
+
     new id = TDStreamerID[_:clickedid];
 
     if (id == -1) {

@@ -150,6 +150,10 @@ _TDS_FORWARD TDSP_OnPlayerDisconnect(playerid, reason);
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     state _ALS : _ALS_go;
 
+    if (!(PlayerText:0 <= playertextid < PlayerText:MAX_PLAYER_TEXT_DRAWS)) {
+        return 0;
+    }
+
     new id = TDStreamerID[playerid][_:playertextid];
 
     if (id == -1) {
