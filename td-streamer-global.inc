@@ -131,7 +131,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid) {
     }
 
     if (!(Text:0 <= clickedid < Text:MAX_TEXT_DRAWS)) {
-        return 0;
+        return 1;
     }
 
     new id = TDStreamerID[_:clickedid];
