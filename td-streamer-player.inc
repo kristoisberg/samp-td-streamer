@@ -9,9 +9,13 @@
 #include <YSI-Data\y_iterate>
 #include <YSI-Server\y_scriptinit>
 #include <YSI-Core\y_utils>
-#include <YSI-Coding\y_hooks>
 
 #include "td-streamer-internal.inc"
+
+
+PRE_HOOK(TDSP)
+#undef CHAIN_ORDER
+#define CHAIN_ORDER @CO_TDSP
 
 
 static enum _:E_TD_STREAMER_PLAYER_DATA {
@@ -35,18 +39,31 @@ forward bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]);
 forward bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER_DATA]);
 
 
-hook OnScriptInit() {
+public OnScriptInit() {
+    state _ALS : _ALS_go;
+
     foreach (new playerid : Player) {
         TDData[playerid] = list_new();
 
         memset(TDStreamerID[playerid], -1, MAX_PLAYER_TEXT_DRAWS);
     }
 
-    return Y_HOOKS_CONTINUE_RETURN_1;
+    return TDSP_OnScriptInit();
 }
 
+#if defined _ALS_OnScriptInit
+    #undef OnScriptInit
+#else
+	#define _ALS_OnScriptInit
+#endif
+#define OnScriptInit() TDSP_OnScriptInit() <_ALS : _ALS_go>
 
-hook OnScriptExit() {
+_TDS_FORWARD TDSP_OnScriptInit();
+
+
+public OnScriptExit() {
+    state _ALS : _ALS_go;
+
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     foreach (new playerid : Player) {
@@ -65,20 +82,42 @@ hook OnScriptExit() {
         list_delete(TDData[playerid]);
     }
 
-    return Y_HOOKS_CONTINUE_RETURN_1;
+    return TDSP_OnScriptExit();
 }
 
+#if defined _ALS_OnScriptExit
+    #undef OnScriptExit
+#else
+	#define _ALS_OnScriptExit
+#endif
+#define OnScriptExit() TDSP_OnScriptExit() <_ALS : _ALS_go>
 
-hook OnPlayerConnect(playerid) {
+_TDS_FORWARD TDSP_OnScriptExit();
+
+
+public OnPlayerConnect(playerid) {
+    state _ALS : _ALS_go;
+
     TDData[playerid] = list_new();
 
     memset(TDStreamerID[playerid], -1, MAX_PLAYER_TEXT_DRAWS);
 
-    return Y_HOOKS_CONTINUE_RETURN_1;
+    return TDSP_OnPlayerConnect(playerid);
 }
 
+#if defined _ALS_OnPlayerConnect
+    #undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+#define OnPlayerConnect(%0) TDSP_OnPlayerConnect(%0) <_ALS : _ALS_go>
 
-hook OnPlayerDisconnect(playerid, reason) {
+_TDS_FORWARD TDSP_OnPlayerConnect(playerid);
+
+
+public OnPlayerDisconnect(playerid, reason) {
+    state _ALS : _ALS_go;
+
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     for (new Iter:id = list_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
@@ -94,26 +133,46 @@ hook OnPlayerDisconnect(playerid, reason) {
     }
 
     list_delete(TDData[playerid]);
-    return Y_HOOKS_CONTINUE_RETURN_1;
+
+    return TDSP_OnPlayerDisconnect(playerid, reason);
 }
 
+#if defined _ALS_OnPlayerDisconnect
+    #undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect(%0) TDSP_OnPlayerDisconnect(%0) <_ALS : _ALS_go>
 
-hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid) {
+_TDS_FORWARD TDSP_OnPlayerDisconnect(playerid, reason);
+
+
+public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
+    state _ALS : _ALS_go;
+
     new id = TDStreamerID[playerid][_:playertextid];
 
     if (id == -1) {
-        return Y_HOOKS_BREAK_RETURN_0;
+        return 0;
     }
 
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     if (!_GetTextDrawData(playerid, id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !data[E_TD_VISIBLE]) {
-        return Y_HOOKS_BREAK_RETURN_0;
+        return 0;
     }
 
-    playertextid = PlayerText:id;
-    return Y_HOOKS_CONTINUE_RETURN_1;
+    return TDSP_OnPlayerClickPlayerTD(playerid, PlayerText:id);
 }
+
+#if defined _ALS_OnPlayerClickPlayerTD
+    #undef OnPlayerClickPlayerTextDraw
+#else
+	#define _ALS_OnPlayerClickPlayerTD
+#endif
+#define OnPlayerClickPlayerTextDraw(%0) TDSP_OnPlayerClickPlayerTD(%0) <_ALS : _ALS_go>
+
+_TDS_FORWARD TDSP_OnPlayerClickPlayerTD(playerid, PlayerText:playertextid);
 
 
 static stock bool:_IsValidTextDraw(playerid, id) {

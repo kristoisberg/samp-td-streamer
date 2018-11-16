@@ -4,6 +4,21 @@
 #define _TDS_internal_included
 
 
+#if !defined CHAIN_ORDER
+    #define CHAIN_ORDER() 0
+#endif
+
+#define PRE_HOOK(%0) forward @CO_%0();public @CO_%0(){return CHAIN_ORDER()+1;}
+
+static stock _TDS_IncludeStates() <_ALS : _ALS_x0, _ALS : _ALS_x1, _ALS : _ALS_x2, _ALS : _ALS_x3> {}
+static stock _TDS_IncludeStates() <_ALS : _ALS_go> {}
+
+#define _TDS_FORWARD%0(%1); \
+	forward%0(%1); \
+	public%0(%1) <_ALS : _ALS_x0, _ALS : _ALS_x1> { return 1; } \
+	public%0(%1) <> { return 1; }
+
+
 enum _:E_TD_STREAMER_PROPERTIES {
     E_TD_FONT,
     E_TD_COLOUR,
