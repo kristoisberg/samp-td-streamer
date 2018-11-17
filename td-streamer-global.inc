@@ -34,130 +34,8 @@ static List:TDData;
 static TDStreamerID[MAX_TEXT_DRAWS] = {-1, ...};
 
 
-forward bool:_IsValidTextDraw(id);
-forward bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]);
-forward bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]);
-
 native Text:_TDS_TextDrawCreate(Float:x, Float:y, AmxString:text) = TextDrawCreate;
 native _TDS_TextDrawSetString(Text:text, AmxString:string) = TextDrawSetString;
-
-
-public OnScriptInit() {
-    state _ALS : _ALS_go;
-
-    TDData = list_new();
-
-    return TDSG_OnScriptInit();
-}
-
-#if defined _ALS_OnScriptInit
-    #undef OnScriptInit
-#else
-	#define _ALS_OnScriptInit
-#endif
-#define OnScriptInit() TDSG_OnScriptInit() <_ALS : _ALS_go>
-
-_TDS_FORWARD TDSG_OnScriptInit();
-
-
-public OnScriptExit() {
-    state _ALS : _ALS_go;
-
-    new data[E_TD_STREAMER_GLOBAL_DATA];
-
-    for (new Iter:id = list_iter(TDData); iter_inside(id); iter_move_next(id)) {
-        if (!iter_sizeof(id)) {
-            continue;
-        }
-
-        iter_get_arr(id, data);
-
-        if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
-            TextDrawDestroy(data[E_TD_INTERNAL_ID]);
-        }
-
-        str_delete(data[E_TD_STRING]);
-    }
-
-    list_delete(TDData);
-
-    return TDSG_OnScriptExit();
-}
-
-#if defined _ALS_OnScriptExit
-    #undef OnScriptExit
-#else
-	#define _ALS_OnScriptExit
-#endif
-#define OnScriptExit() TDSG_OnScriptExit() <_ALS : _ALS_go>
-
-_TDS_FORWARD TDSG_OnScriptExit();
-
-
-public OnPlayerDisconnect(playerid, reason) {
-    state _ALS : _ALS_go;
-
-    new data[E_TD_STREAMER_GLOBAL_DATA];
-
-    for (new id; id < MAX_TEXT_DRAWS; id++) {
-        if (TDStreamerID[id] != -1) {
-            _GetTextDrawData(TDStreamerID[id], data);
-
-            if (PA_Get(data[E_TD_VISIBLE], playerid)) {
-                PA_Set(data[E_TD_VISIBLE], playerid, false);
-
-                if (!Bit_Count(data[E_TD_VISIBLE])) {
-                    _DestroyTextDraw(data);
-                }
-
-                _SetTextDrawData(TDStreamerID[id], data);
-            }
-        }
-    }
-
-    return TDSG_OnPlayerDisconnect(playerid, reason);
-}
-
-#if defined _ALS_OnPlayerDisconnect
-    #undef OnPlayerDisconnect
-#else
-	#define _ALS_OnPlayerDisconnect
-#endif
-#define OnPlayerDisconnect(%0) TDSG_OnPlayerDisconnect(%0) <_ALS : _ALS_go>
-
-_TDS_FORWARD TDSG_OnPlayerDisconnect(playerid, reason);
-
-
-public OnPlayerClickTextDraw(playerid, Text:clickedid) {
-    state _ALS : _ALS_go;
-
-    if (clickedid == Text:INVALID_TEXT_DRAW) {
-        return TDSG_OnPlayerClickTextDraw(playerid, clickedid);
-    }
-
-    new id = TDStreamerID[_:clickedid];
-
-    if (id == -1) {
-        return 0;
-    }
-
-    new data[E_TD_STREAMER_GLOBAL_DATA];
-
-    if (!_GetTextDrawData(id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
-        return 1;
-    }
-
-    return TDSG_OnPlayerClickTextDraw(playerid, Text:id);
-}
-
-#if defined _ALS_OnPlayerClickTextDraw
-    #undef OnPlayerClickTextDraw
-#else
-	#define _ALS_OnPlayerClickTextDraw
-#endif
-#define OnPlayerClickTextDraw(%0) TDSG_OnPlayerClickTextDraw(%0) <_ALS : _ALS_go>
-
-_TDS_FORWARD TDSG_OnPlayerClickTextDraw(playerid, Text:clickedid);
 
 
 static stock bool:_IsValidTextDraw(id) {
@@ -280,6 +158,124 @@ static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
     data[E_TD_INTERNAL_ID] = Text:INVALID_TEXT_DRAW;
     return 1;
 }
+
+
+public OnScriptInit() {
+    state _ALS : _ALS_go;
+
+    TDData = list_new();
+
+    return TDSG_OnScriptInit();
+}
+
+#if defined _ALS_OnScriptInit
+    #undef OnScriptInit
+#else
+	#define _ALS_OnScriptInit
+#endif
+#define OnScriptInit() TDSG_OnScriptInit() <_ALS : _ALS_go>
+
+_TDS_FORWARD TDSG_OnScriptInit();
+
+
+public OnScriptExit() {
+    state _ALS : _ALS_go;
+
+    new data[E_TD_STREAMER_GLOBAL_DATA];
+
+    for (new Iter:id = list_iter(TDData); iter_inside(id); iter_move_next(id)) {
+        if (!iter_sizeof(id)) {
+            continue;
+        }
+
+        iter_get_arr(id, data);
+
+        if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+            TextDrawDestroy(data[E_TD_INTERNAL_ID]);
+        }
+
+        str_delete(data[E_TD_STRING]);
+    }
+
+    list_delete(TDData);
+
+    return TDSG_OnScriptExit();
+}
+
+#if defined _ALS_OnScriptExit
+    #undef OnScriptExit
+#else
+	#define _ALS_OnScriptExit
+#endif
+#define OnScriptExit() TDSG_OnScriptExit() <_ALS : _ALS_go>
+
+_TDS_FORWARD TDSG_OnScriptExit();
+
+
+public OnPlayerDisconnect(playerid, reason) {
+    state _ALS : _ALS_go;
+
+    new data[E_TD_STREAMER_GLOBAL_DATA];
+
+    for (new id; id < MAX_TEXT_DRAWS; id++) {
+        if (TDStreamerID[id] != -1) {
+            _GetTextDrawData(TDStreamerID[id], data);
+
+            if (PA_Get(data[E_TD_VISIBLE], playerid)) {
+                PA_Set(data[E_TD_VISIBLE], playerid, false);
+
+                if (!Bit_Count(data[E_TD_VISIBLE])) {
+                    _DestroyTextDraw(data);
+                }
+
+                _SetTextDrawData(TDStreamerID[id], data);
+            }
+        }
+    }
+
+    return TDSG_OnPlayerDisconnect(playerid, reason);
+}
+
+#if defined _ALS_OnPlayerDisconnect
+    #undef OnPlayerDisconnect
+#else
+	#define _ALS_OnPlayerDisconnect
+#endif
+#define OnPlayerDisconnect(%0) TDSG_OnPlayerDisconnect(%0) <_ALS : _ALS_go>
+
+_TDS_FORWARD TDSG_OnPlayerDisconnect(playerid, reason);
+
+
+public OnPlayerClickTextDraw(playerid, Text:clickedid) {
+    state _ALS : _ALS_go;
+
+    if (clickedid == Text:INVALID_TEXT_DRAW) {
+        return TDSG_OnPlayerClickTextDraw(playerid, clickedid);
+    }
+
+    new id = TDStreamerID[_:clickedid];
+
+    if (id == -1) {
+        return 0;
+    }
+
+    new data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
+        return 1;
+    }
+
+    return TDSG_OnPlayerClickTextDraw(playerid, Text:id);
+}
+
+#if defined _ALS_OnPlayerClickTextDraw
+    #undef OnPlayerClickTextDraw
+#else
+	#define _ALS_OnPlayerClickTextDraw
+#endif
+#define OnPlayerClickTextDraw(%0) TDSG_OnPlayerClickTextDraw(%0) <_ALS : _ALS_go>
+
+_TDS_FORWARD TDSG_OnPlayerClickTextDraw(playerid, Text:clickedid);
 
 
 stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {

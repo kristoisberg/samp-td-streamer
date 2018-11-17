@@ -34,12 +34,134 @@ static List:TDData[MAX_PLAYERS];
 static TDStreamerID[MAX_PLAYERS][MAX_PLAYER_TEXT_DRAWS];
 
 
-forward bool:_IsValidTextDraw(playerid, id);
-forward bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]);
-forward bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER_DATA]);
-
 native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
 native _TDS_PlayerTextDrawSetString(playerid, PlayerText:text, AmxString:string) = PlayerTextDrawSetString;
+
+
+static stock bool:_IsValidTextDraw(playerid, id) {
+    if (!IsPlayerConnected(playerid)) {
+        return false;
+    }
+
+    return list_sizeof(TDData[playerid], id) != 0;
+}
+
+
+static stock bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
+    if (!_IsValidTextDraw(playerid, id)) {
+        return false;
+    }
+
+    list_get_arr(TDData[playerid], id, data);
+    return true;
+}
+
+
+static stock bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER_DATA]) {
+    if (!_IsValidTextDraw(playerid, id)) {
+        return false;
+    }
+
+    list_set_arr(TDData[playerid], id, data);
+    return true;
+}
+
+
+static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
+    data[E_TD_INTERNAL_ID] = _TDS_CreatePlayerTextDraw(playerid, data[E_TD_POS_X], data[E_TD_POS_Y], data[E_TD_STRING]);
+
+    if (data[E_TD_INTERNAL_ID] == PlayerText:INVALID_TEXT_DRAW) {
+        return 1;
+    }
+
+    TDStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = id;
+
+    if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
+        PlayerTextDrawFont(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_COLOUR] != TDDefaultProperties[E_TD_COLOUR]) {
+        PlayerTextDrawColor(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_COLOUR]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_ALIGNMENT] != TDDefaultProperties[E_TD_ALIGNMENT]) {
+        PlayerTextDrawAlignment(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_ALIGNMENT]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE] != TDDefaultProperties[E_TD_SHADOW_SIZE]) {
+        PlayerTextDrawSetShadow(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH] != TDDefaultProperties[E_TD_OUTLINE_WIDTH]) {
+        PlayerTextDrawSetOutline(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR] != TDDefaultProperties[E_TD_BACKGROUND_COLOUR]) {
+        PlayerTextDrawBackgroundColor(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL] != TDDefaultProperties[E_TD_IS_PROPORTIONAL]) {
+        PlayerTextDrawSetProportional(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] != TDDefaultProperties[E_TD_IS_SELECTABLE]) {
+        PlayerTextDrawSetSelectable(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X] != TDDefaultProperties[E_TD_TEXT_SIZE_X] ||
+        data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y] != TDDefaultProperties[E_TD_TEXT_SIZE_Y]
+    ) {
+        PlayerTextDrawTextSize(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X], data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X] != TDDefaultProperties[E_TD_LETTER_SIZE_X] ||
+        data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y] != TDDefaultProperties[E_TD_LETTER_SIZE_Y]
+    ) {
+        PlayerTextDrawLetterSize(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X], data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_HAS_BOX] != TDDefaultProperties[E_TD_HAS_BOX]) {
+        PlayerTextDrawUseBox(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_HAS_BOX]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_BOX_COLOUR] != TDDefaultProperties[E_TD_BOX_COLOUR]) {
+        PlayerTextDrawBoxColor(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_BOX_COLOUR]);
+    }
+
+    if (data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL] != TDDefaultProperties[E_TD_PREVIEW_MODEL]) {
+        PlayerTextDrawSetPreviewModel(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1] != TDDefaultProperties[E_TD_PREVIEW_VEHICLE_COLOUR_1] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2] != TDDefaultProperties[E_TD_PREVIEW_VEHICLE_COLOUR_2]
+    ) {
+        PlayerTextDrawSetPreviewVehCol(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1], data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2]);
+    }
+
+    if (
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X] != TDDefaultProperties[E_TD_PREVIEW_ROT_X] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y] != TDDefaultProperties[E_TD_PREVIEW_ROT_Y] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z] != TDDefaultProperties[E_TD_PREVIEW_ROT_Z] || 
+        data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM] != TDDefaultProperties[E_TD_PREVIEW_ZOOM]
+    ) {
+        PlayerTextDrawSetPreviewRot(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z], data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM]);
+    }
+
+    return 1;
+}
+
+
+static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
+    TDStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = -1;
+
+    PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
+
+    data[E_TD_INTERNAL_ID] = PlayerText:INVALID_TEXT_DRAW;
+    return 1;
+}
 
 
 public OnScriptInit() {
@@ -180,132 +302,6 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
 #define OnPlayerClickPlayerTextDraw(%0) TDSP_OnPlayerClickPlayerTD(%0) <_ALS : _ALS_go>
 
 _TDS_FORWARD TDSP_OnPlayerClickPlayerTD(playerid, PlayerText:playertextid);
-
-
-static stock bool:_IsValidTextDraw(playerid, id) {
-    if (!IsPlayerConnected(playerid)) {
-        return false;
-    }
-
-    return list_sizeof(TDData[playerid], id) != 0;
-}
-
-
-static stock bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
-    if (!_IsValidTextDraw(playerid, id)) {
-        return false;
-    }
-
-    list_get_arr(TDData[playerid], id, data);
-    return true;
-}
-
-
-static stock bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER_DATA]) {
-    if (!_IsValidTextDraw(playerid, id)) {
-        return false;
-    }
-
-    list_set_arr(TDData[playerid], id, data);
-    return true;
-}
-
-
-static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
-    data[E_TD_INTERNAL_ID] = _TDS_CreatePlayerTextDraw(playerid, data[E_TD_POS_X], data[E_TD_POS_Y], data[E_TD_STRING]);
-
-    if (data[E_TD_INTERNAL_ID] == PlayerText:INVALID_TEXT_DRAW) {
-        return 1;
-    }
-
-    TDStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = id;
-
-    if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
-        PlayerTextDrawFont(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_COLOUR] != TDDefaultProperties[E_TD_COLOUR]) {
-        PlayerTextDrawColor(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_COLOUR]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_ALIGNMENT] != TDDefaultProperties[E_TD_ALIGNMENT]) {
-        PlayerTextDrawAlignment(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_ALIGNMENT]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE] != TDDefaultProperties[E_TD_SHADOW_SIZE]) {
-        PlayerTextDrawSetShadow(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_SHADOW_SIZE]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH] != TDDefaultProperties[E_TD_OUTLINE_WIDTH]) {
-        PlayerTextDrawSetOutline(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_OUTLINE_WIDTH]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR] != TDDefaultProperties[E_TD_BACKGROUND_COLOUR]) {
-        PlayerTextDrawBackgroundColor(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_BACKGROUND_COLOUR]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL] != TDDefaultProperties[E_TD_IS_PROPORTIONAL]) {
-        PlayerTextDrawSetProportional(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_IS_PROPORTIONAL]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] != TDDefaultProperties[E_TD_IS_SELECTABLE]) {
-        PlayerTextDrawSetSelectable(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE]);
-    }
-
-    if (
-        data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X] != TDDefaultProperties[E_TD_TEXT_SIZE_X] ||
-        data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y] != TDDefaultProperties[E_TD_TEXT_SIZE_Y]
-    ) {
-        PlayerTextDrawTextSize(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_X], data[E_TD_PROPERTIES][E_TD_TEXT_SIZE_Y]);
-    }
-
-    if (
-        data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X] != TDDefaultProperties[E_TD_LETTER_SIZE_X] ||
-        data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y] != TDDefaultProperties[E_TD_LETTER_SIZE_Y]
-    ) {
-        PlayerTextDrawLetterSize(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_X], data[E_TD_PROPERTIES][E_TD_LETTER_SIZE_Y]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_HAS_BOX] != TDDefaultProperties[E_TD_HAS_BOX]) {
-        PlayerTextDrawUseBox(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_HAS_BOX]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_BOX_COLOUR] != TDDefaultProperties[E_TD_BOX_COLOUR]) {
-        PlayerTextDrawBoxColor(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_BOX_COLOUR]);
-    }
-
-    if (data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL] != TDDefaultProperties[E_TD_PREVIEW_MODEL]) {
-        PlayerTextDrawSetPreviewModel(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_MODEL]);
-    }
-
-    if (
-        data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1] != TDDefaultProperties[E_TD_PREVIEW_VEHICLE_COLOUR_1] || 
-        data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2] != TDDefaultProperties[E_TD_PREVIEW_VEHICLE_COLOUR_2]
-    ) {
-        PlayerTextDrawSetPreviewVehCol(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_1], data[E_TD_PROPERTIES][E_TD_PREVIEW_VEHICLE_COLOUR_2]);
-    }
-
-    if (
-        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X] != TDDefaultProperties[E_TD_PREVIEW_ROT_X] || 
-        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y] != TDDefaultProperties[E_TD_PREVIEW_ROT_Y] || 
-        data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z] != TDDefaultProperties[E_TD_PREVIEW_ROT_Z] || 
-        data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM] != TDDefaultProperties[E_TD_PREVIEW_ZOOM]
-    ) {
-        PlayerTextDrawSetPreviewRot(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_X], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Y], data[E_TD_PROPERTIES][E_TD_PREVIEW_ROT_Z], data[E_TD_PROPERTIES][E_TD_PREVIEW_ZOOM]);
-    }
-
-    return 1;
-}
-
-
-static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
-    TDStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = -1;
-
-    PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
-
-    data[E_TD_INTERNAL_ID] = PlayerText:INVALID_TEXT_DRAW;
-    return 1;
-}
 
 
 stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text[]) {
