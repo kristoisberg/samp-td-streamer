@@ -154,10 +154,6 @@ _TDS_FORWARD TDSP_OnPlayerDisconnect(playerid, reason);
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     state _ALS : _ALS_go;
 
-    if (!(PlayerText:0 <= playertextid < PlayerText:MAX_PLAYER_TEXT_DRAWS)) {
-        return 1;
-    }
-
     new id = TDStreamerID[playerid][_:playertextid];
 
     if (id == -1) {
@@ -167,7 +163,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     if (!_GetTextDrawData(playerid, id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !data[E_TD_VISIBLE]) {
-        return 0;
+        return 1;
     }
 
     return TDSP_OnPlayerClickPlayerTD(playerid, PlayerText:id);

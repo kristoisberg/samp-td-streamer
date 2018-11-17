@@ -132,10 +132,6 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid) {
         return TDSG_OnPlayerClickTextDraw(playerid, clickedid);
     }
 
-    if (!(Text:0 <= clickedid < Text:MAX_TEXT_DRAWS)) {
-        return 1;
-    }
-
     new id = TDStreamerID[_:clickedid];
 
     if (id == -1) {
@@ -145,7 +141,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     if (!_GetTextDrawData(id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
-        return 0;
+        return 1;
     }
 
     return TDSG_OnPlayerClickTextDraw(playerid, Text:id);
