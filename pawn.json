@@ -5,7 +5,7 @@
 	"output": "test.amx",
 	"dependencies": [
 		"sampctl/samp-stdlib",
-		"kristoisberg/PawnPlus",
+		"IllidanS4/PawnPlus",
 		"YSI-Data/y_playerarray",
 		"YSI-Server/y_scriptinit",
 		"YSI-Data/y_iterate",
