@@ -38,6 +38,9 @@ forward bool:_IsValidTextDraw(id);
 forward bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]);
 forward bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]);
 
+native Text:_TDS_TextDrawCreate(Float:x, Float:y, AmxString:text) = TextDrawCreate;
+native _TDS_TextDrawSetString(Text:text, AmxString:string) = TextDrawSetString;
+
 
 public OnScriptInit() {
     state _ALS : _ALS_go;
@@ -183,10 +186,7 @@ static stock bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]) {
 
 
 static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
-    new string[1024];
-    str_get(data[E_TD_STRING], string);
-
-    data[E_TD_INTERNAL_ID] = TextDrawCreate(data[E_TD_POS_X], data[E_TD_POS_Y], string);
+    data[E_TD_INTERNAL_ID] = _TDS_TextDrawCreate(data[E_TD_POS_X], data[E_TD_POS_Y], data[E_TD_STRING]);
 
     if (data[E_TD_INTERNAL_ID] == Text:INVALID_TEXT_DRAW) {
         return 1;
@@ -302,6 +302,21 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
     #define _ALS_TextDrawCreate
 #endif
 #define TextDrawCreate TDS_TextDrawCreate
+
+
+stock Text:TextDrawCreate_s(Float:x, Float:y, String:text) {
+    new data[E_TD_STREAMER_GLOBAL_DATA];
+
+    data[E_TD_STRING] = str_acquire(str_clone(text));
+    data[E_TD_INTERNAL_ID] = Text:INVALID_TEXT_DRAW;
+    data[E_TD_PROPERTIES] = TDDefaultProperties;
+
+    data[E_TD_POS_X] = x;
+    data[E_TD_POS_Y] = y;
+
+    PA_Init(data[E_TD_VISIBLE]);
+    return Text:list_add_arr(TDData, data);
+}
 
 
 stock TDS_IsValidTextDraw(Text:text) {
@@ -522,6 +537,34 @@ stock TDS_TextDrawGetString(Text:text, string[], len = sizeof(string)) {
     #define _ALS_TextDrawGetString
 #endif
 #define TextDrawGetString TDS_TextDrawGetString
+
+
+stock TextDrawSetString_s(Text:text, String:string) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        _TDS_TextDrawSetString(data[E_TD_INTERNAL_ID], string);
+    }
+
+    str_set(data[E_TD_STRING], string);
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+
+stock String:TextDrawGetString_s(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return STRING_NULL;
+    }
+
+    return str_clone(data[E_TD_STRING]);
+}
 
 
 stock TDS_TextDrawSetPos(Text:text, Float:x, Float:y) {

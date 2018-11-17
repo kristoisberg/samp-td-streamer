@@ -98,6 +98,14 @@ Test:Global() {
 
     ASSERT(TextDrawDestroy(id) == 1);
     ASSERT(IsValidTextDraw(id) == 0);
+
+    id = TextDrawCreate_s(10.0, 10.0, str_new("test"));
+    ASSERT(_:id == 1);
+    ASSERT(IsValidTextDraw(id) == 1);
+
+    ASSERT(str_eq(TextDrawGetString_s(id), str_new("test")));
+    TextDrawSetString_s(id, str_new("asd"));
+    ASSERT(str_eq(TextDrawGetString_s(id), str_new("asd")));
 }
 
 
@@ -166,6 +174,10 @@ Test:Player() {
     PlayerTextDrawGetPreviewVehCol(playerid, id, color1, color2);
 
     PlayerTextDrawDestroy(playerid, id);
+
+    id = CreatePlayerTextDraw_s(playerid, 10.0, 10.0, str_new("test"));
+    PlayerTextDrawGetString_s(playerid, id);
+    PlayerTextDrawSetString_s(playerid, id, str_new("asd"));
 }
 
 

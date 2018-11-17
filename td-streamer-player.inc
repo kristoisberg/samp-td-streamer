@@ -38,6 +38,9 @@ forward bool:_IsValidTextDraw(playerid, id);
 forward bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]);
 forward bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER_DATA]);
 
+native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
+native _TDS_PlayerTextDrawSetString(playerid, PlayerText:text, AmxString:string) = PlayerTextDrawSetString;
+
 
 public OnScriptInit() {
     state _ALS : _ALS_go;
@@ -209,10 +212,7 @@ static stock bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER
 
 
 static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
-    new string[1024];
-    str_get(data[E_TD_STRING], string);
-
-    data[E_TD_INTERNAL_ID] = CreatePlayerTextDraw(playerid, data[E_TD_POS_X], data[E_TD_POS_Y], string);
+    data[E_TD_INTERNAL_ID] = _TDS_CreatePlayerTextDraw(playerid, data[E_TD_POS_X], data[E_TD_POS_Y], data[E_TD_STRING]);
 
     if (data[E_TD_INTERNAL_ID] == PlayerText:INVALID_TEXT_DRAW) {
         return 1;
@@ -332,6 +332,25 @@ stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text
     #define _ALS_CreatePlayerTextDraw
 #endif
 #define CreatePlayerTextDraw TDS_CreatePlayerTextDraw
+
+
+stock PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text) {
+    if (!IsPlayerConnected(playerid)) {
+        return PlayerText:INVALID_TEXT_DRAW;
+    }
+
+    new data[E_TD_STREAMER_PLAYER_DATA];
+
+    data[E_TD_STRING] = str_acquire(str_clone(text));
+    data[E_TD_INTERNAL_ID] = PlayerText:INVALID_TEXT_DRAW;
+    data[E_TD_PROPERTIES] = TDDefaultProperties;
+    data[E_TD_VISIBLE] = false;
+
+    data[E_TD_POS_X] = x;
+    data[E_TD_POS_Y] = y;
+
+    return PlayerText:list_add_arr(TDData[playerid], data);
+}
 
 
 stock TDS_IsValidPlayerTextDraw(playerid, PlayerText:text) {
@@ -481,6 +500,34 @@ stock TDS_PlayerTextDrawGetString(playerid, PlayerText:text, string[], len = siz
     #define _ALS_PlayerTextDrawGetString
 #endif
 #define PlayerTextDrawGetString TDS_PlayerTextDrawGetString
+
+
+stock PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string) {
+    new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
+
+    if (!_GetTextDrawData(playerid, id, data)) {
+        return 0;
+    }
+
+    if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
+        _TDS_PlayerTextDrawSetString(playerid, data[E_TD_INTERNAL_ID], string);
+    }
+
+    str_set(data[E_TD_STRING], string);
+    _SetTextDrawData(playerid, id, data);
+    return 1;
+}
+
+
+stock String:PlayerTextDrawGetString_s(playerid, PlayerText:text) {
+    new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
+
+    if (!_GetTextDrawData(playerid, id, data)) {
+        return STRING_NULL;
+    }
+
+    return str_clone(data[E_TD_STRING]);
+}
 
 
 stock TDS_PlayerTextDrawSetPos(playerid, PlayerText:text, Float:x, Float:y) {
