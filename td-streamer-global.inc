@@ -67,6 +67,8 @@ public OnScriptExit() {
             continue;
         }
 
+        iter_get_arr(id, data);
+
         if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
             TextDrawDestroy(data[E_TD_INTERNAL_ID]);
         }

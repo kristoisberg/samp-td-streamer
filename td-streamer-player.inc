@@ -72,6 +72,8 @@ public OnScriptExit() {
                 continue;
             }
 
+            iter_get_arr(id, data);
+
             if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
                 PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
             }
@@ -124,6 +126,8 @@ public OnPlayerDisconnect(playerid, reason) {
         if (!iter_sizeof(id)) {
             continue;
         }
+
+        iter_get_arr(id, data);
 
         if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
             PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
