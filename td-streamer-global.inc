@@ -1192,7 +1192,7 @@ stock TDS_TextDrawGetPreviewModel(Text:text) {
 #define TextDrawGetPreviewModel TDS_TextDrawGetPreviewModel
 
 
-stock TDS_TextDrawSetPreviewRot(Text:text, Float:x, Float:y, Float:z, Float:zoom) {
+stock TDS_TextDrawSetPreviewRot(Text:text, Float:x, Float:y, Float:z, Float:zoom = 1.0) {
     new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
 
     if (!_GetTextDrawData(id, data)) {

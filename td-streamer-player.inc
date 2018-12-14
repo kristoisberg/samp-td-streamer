@@ -1155,7 +1155,7 @@ stock TDS_PlayerTDGetPreviewModel(playerid, PlayerText:text) {
 #define PlayerTextDrawGetPreviewModel TDS_PlayerTDGetPreviewModel
 
 
-stock TDS_PlayerTextDrawSetPreviewRot(playerid, PlayerText:text, Float:x, Float:y, Float:z, Float:zoom) {
+stock TDS_PlayerTextDrawSetPreviewRot(playerid, PlayerText:text, Float:x, Float:y, Float:z, Float:zoom = 1.0) {
     new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
 
     if (!_GetTextDrawData(playerid, id, data)) {
