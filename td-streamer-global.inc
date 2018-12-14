@@ -156,7 +156,6 @@ static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
     TextDrawDestroy(data[E_TD_INTERNAL_ID]);
 
     data[E_TD_INTERNAL_ID] = Text:INVALID_TEXT_DRAW;
-    return 1;
 }
 
 
@@ -397,10 +396,13 @@ stock TDS_TextDrawHideForPlayer(playerid, Text:text) {
     }
 
     PA_Set(data[E_TD_VISIBLE], playerid, false);
-    TextDrawHideForPlayer(playerid, data[E_TD_INTERNAL_ID]);
 
-    if (!Bit_Count(data[E_TD_VISIBLE])) {
-        _DestroyTextDraw(data);
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawHideForPlayer(playerid, data[E_TD_INTERNAL_ID]);
+
+        if (!Bit_Count(data[E_TD_VISIBLE])) {
+            _DestroyTextDraw(data);
+        }
     }
 
     _SetTextDrawData(id, data);
@@ -455,9 +457,13 @@ stock TDS_TextDrawHideForAll(Text:text) {
     }
 
     Bit_SetAll(data[E_TD_VISIBLE], false);
-    TextDrawHideForAll(data[E_TD_INTERNAL_ID]);
 
-    _DestroyTextDraw(data);
+    if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+        TextDrawHideForAll(data[E_TD_INTERNAL_ID]);
+
+        _DestroyTextDraw(data);
+    }
+
     _SetTextDrawData(id, data);
     return 1;
 }

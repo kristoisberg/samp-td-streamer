@@ -160,7 +160,6 @@ static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
     PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
 
     data[E_TD_INTERNAL_ID] = PlayerText:INVALID_TEXT_DRAW;
-    return 1;
 }
 
 
@@ -424,7 +423,10 @@ stock TDS_PlayerTextDrawHide(playerid, PlayerText:text) {
 
     data[E_TD_VISIBLE] = false;
 
-    _DestroyTextDraw(playerid, data);
+    if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
+        _DestroyTextDraw(playerid, data);
+    }
+
     _SetTextDrawData(playerid, id, data);
     return 1;
 }
