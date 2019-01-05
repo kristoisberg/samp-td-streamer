@@ -6,28 +6,24 @@
 	"dependencies": [
 		"sampctl/samp-stdlib",
 		"IllidanS4/PawnPlus",
-		"YSI-Data/y_playerarray",
-		"YSI-Server/y_scriptinit",
-		"YSI-Data/y_iterate",
-		"YSI-Core/y_utils"
+		"pawn-lang/YSI-Includes@5.x"
 	],
 	"dev_dependencies": [
-		"YSI-Core/y_testing",
 		"Open-GTO/mselect"
 	],
 	"builds": [
 		{
 			"name": "main",
-			"version": "3.10.8"
+			"version": "3.10.9"
 		},
 		{
 			"name": "pre",
-			"version": "3.10.8",
+			"version": "3.10.9",
 			"args": ["-l"]
 		},	
 		{
 			"name": "asm",
-			"version": "3.10.8",
+			"version": "3.10.9",
 			"args": ["-a"]
 		}
 	],

@@ -5,7 +5,7 @@
 #include <mselect>
 
 #define RUN_TESTS
-#include <YSI-Core/y_testing>
+#include <YSI_Core/y_testing>
 
 
 Test:Global() {

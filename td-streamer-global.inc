@@ -6,9 +6,9 @@
 
 #include <a_samp>
 #include <PawnPlus>
-#include <YSI-Data\y_playerarray>
-#include <YSI-Data\y_iterate>
-#include <YSI-Server\y_scriptinit>
+#include <YSI_Data\y_playerarray>
+#include <YSI_Data\y_iterate>
+#include <YSI_Server\y_scriptinit>
 
 #include "td-streamer-internal.inc"
 
@@ -39,7 +39,7 @@ native _TDS_TextDrawSetString(Text:text, AmxString:string) = TextDrawSetString;
 
 
 static stock bool:_IsValidTextDraw(id) {
-    return list_sizeof(TDData, id) != 0;
+    return list_size(TDData) > id && list_sizeof(TDData, id) != 0;
 }
 
 
