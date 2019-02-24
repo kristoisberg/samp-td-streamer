@@ -25,6 +25,9 @@ static enum _:E_TD_STREAMER_PLAYER_DATA {
 
     Float:E_TD_POS_X,
     Float:E_TD_POS_Y,
+    
+    E_TD_EXTRA_1,
+    E_TD_EXTRA_2,
 
     E_TD_PROPERTIES[E_TD_STREAMER_PROPERTIES]
 }
@@ -34,7 +37,7 @@ static List:TDData[MAX_PLAYERS];
 static TDStreamerID[MAX_PLAYERS][MAX_PLAYER_TEXT_DRAWS];
 
 
-native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
+native PlayerText:_PlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
 native _TDS_PlayerTextDrawSetString(playerid, PlayerText:text, AmxString:string) = PlayerTextDrawSetString;
 
 
@@ -317,6 +320,9 @@ stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text
 
     data[E_TD_POS_X] = x;
     data[E_TD_POS_Y] = y;
+    
+    data[E_TD_EXTRA_1] = 0;
+    data[E_TD_EXTRA_2] = 0;
 
     return PlayerText:list_add_arr(TDData[playerid], data);
 }
@@ -343,6 +349,9 @@ stock PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text)
 
     data[E_TD_POS_X] = x;
     data[E_TD_POS_Y] = y;
+    
+    data[E_TD_EXTRA_1] = 0;
+    data[E_TD_EXTRA_2] = 0;
 
     return PlayerText:list_add_arr(TDData[playerid], data);
 }
@@ -1255,3 +1264,46 @@ stock TDS_PlayerTDGetPreviewVehCol(playerid, PlayerText:text, &color1, &color2) 
     #define _ALS_PlayerTDGetPreviewVehCol
 #endif
 #define PlayerTextDrawGetPreviewVehCol TDS_PlayerTDGetPreviewVehCol
+
+
+stock TDS_PlayerTDSetExtraID(playerid, PlayerText:text, extra1, extra2 = 0) {
+    new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
+
+    if (!_GetTextDrawData(playerid, id, data)) {
+        return 0;
+    }
+
+    data[E_TD_EXTRA_1] = extra1;
+    data[E_TD_EXTRA_2] = extra2;
+
+    _SetTextDrawData(playerid, id, data);
+    return 1;
+}
+
+#if defined _ALS_PlayerTDSetExtraID
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_PlayerTDSetExtraID
+#endif
+#define PlayerTextDrawSetExtraID TDS_PlayerTDSetExtraID
+
+
+stock TDS_PlayerTDGetExtraID(playerid, PlayerText:text, &extra1, &extra2 = 0) {
+    new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
+
+    if (!_GetTextDrawData(playerid, id, data)) {
+        return 0;
+    }
+
+    color1 = data[E_TD_EXTRA_1];
+    color2 = data[E_TD_EXTRA_2];
+
+    return 1;
+}
+
+#if defined _ALS_PlayerTDGetExtraID
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_PlayerTDGetExtraID
+#endif
+#define PlayerTextDrawGetExtraID TDS_PlayerTDGetExtraID
