@@ -1288,8 +1288,8 @@ stock PlayerTextDrawGetExtraID(playerid, PlayerText:text, &extra1, &extra2 = INV
         return 0;
     }
 
-    color1 = data[E_TD_EXTRA_1];
-    color2 = data[E_TD_EXTRA_2];
+    extra1 = data[E_TD_EXTRA_1];
+    extra2 = data[E_TD_EXTRA_2];
 
     return 1;
 }

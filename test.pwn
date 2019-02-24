@@ -96,6 +96,16 @@ Test:Global() {
     ASSERT(color1 == 15);
     ASSERT(color2 == 45);
 
+    new extra1, extra2;
+    TextDrawGetExtraID(id, extra1, extra2);
+    ASSERT(extra1 == INVALID_TEXTDRAW_EXTRA_ID);
+    ASSERT(extra2 == INVALID_TEXTDRAW_EXTRA_ID);
+
+    TextDrawSetExtraID(id, 23, 67);
+    TextDrawGetExtraID(id, extra1, extra2);
+    ASSERT(extra1 == 23);
+    ASSERT(extra2 == 67);
+
     ASSERT(TextDrawDestroy(id) == 1);
     ASSERT(IsValidTextDraw(id) == 0);
 
@@ -106,11 +116,6 @@ Test:Global() {
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("test")));
     TextDrawSetString_s(id, str_new("asd"));
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("asd")));
-    
-    TextDrawSetExtraID(id, 23, 67);
-    new extra1, extra2;
-    TextDrawGetExtraID(id, extra1, extra2);
-    ASSERT((extra1 == 23 && extra2 == 67));
 }
 
 
@@ -178,16 +183,14 @@ Test:Player() {
     PlayerTextDrawSetPreviewVehCol(playerid, id, 15, 45);
     PlayerTextDrawGetPreviewVehCol(playerid, id, color1, color2);
 
+    new extra1, extra2;
+    PlayerTextDrawSetExtraID(playerid, id, 55, 32);
+    PlayerTextDrawGetExtraID(playerid, id, extra1, extra2);
     PlayerTextDrawDestroy(playerid, id);
 
     id = CreatePlayerTextDraw_s(playerid, 10.0, 10.0, str_new("test"));
     PlayerTextDrawGetString_s(playerid, id);
     PlayerTextDrawSetString_s(playerid, id, str_new("asd"));
-    
-    PlayerTextDrawSetExtraID(playerid, id, 55, 32);
-    new extra1, extra2;
-    PlayerTextDrawGetExtraID(playerid, id, extra1, extra2);
-    ASSERT((extra1 == 55 && extra2 == 32));
 }
 
 
