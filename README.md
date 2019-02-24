@@ -96,6 +96,8 @@ TextDrawSetPreviewRot(Text:text, Float:x, Float:y, Float:z, Float:zoom = 1.0);
 TextDrawGetPreviewRot(Text:text, &Float:x, &Float:y, &Float:z, &Float:zoom);
 TextDrawSetPreviewVehCol(Text:text, color1, color2);
 TextDrawGetPreviewVehCol(Text:text, &color1, &color2);
+TextDrawSetExtraID(Text:text, extra1, extra2 = INVALID_TEXTDRAW_EXTRA_ID);
+TextDrawGetExtraID(Text:text, &extra1, &extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 ```
 
 
@@ -144,6 +146,8 @@ PlayerTextDrawSetPreviewRot(playerid, PlayerText:text, Float:x, Float:y, Float:z
 PlayerTextDrawGetPreviewRot(playerid, PlayerText:text, &Float:x, &Float:y, &Float:z, &Float:zoom);
 PlayerTextDrawSetPreviewVehCol(playerid, PlayerText:text, color1, color2);
 PlayerTextDrawGetPreviewVehCol(playerid, PlayerText:text, &color1, &color2);
+PlayerTextDrawSetExtraID(playerid, PlayerText:text, extra1, extra2 = INVALID_TEXTDRAW_EXTRA_ID);
+PlayerTextDrawGetExtraID(playerid, PlayerText:text, &extra1, &extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 ```
 
 
