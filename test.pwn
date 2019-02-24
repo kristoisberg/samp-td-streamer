@@ -106,6 +106,11 @@ Test:Global() {
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("test")));
     TextDrawSetString_s(id, str_new("asd"));
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("asd")));
+    
+    TextDrawSetExtraID(id, 23, 67);
+    new extra1, extra2;
+    TextDrawGetExtraID(id, extra1, extra2);
+    ASSERT(extra1 == 23 && extra2 == 67);
 }
 
 
@@ -178,6 +183,10 @@ Test:Player() {
     id = CreatePlayerTextDraw_s(playerid, 10.0, 10.0, str_new("test"));
     PlayerTextDrawGetString_s(playerid, id);
     PlayerTextDrawSetString_s(playerid, id, str_new("asd"));
+    
+    PlayerTextDrawSetExtraID(playerid, id, 55, 32);
+    new extra1, extra2;
+    PlayerTextDrawGetExtraID(playerid, id, extra1, extra2);
 }
 
 
