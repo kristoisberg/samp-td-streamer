@@ -37,7 +37,7 @@ static List:TDData[MAX_PLAYERS];
 static TDStreamerID[MAX_PLAYERS][MAX_PLAYER_TEXT_DRAWS];
 
 
-native PlayerText:_PlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
+native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
 native _TDS_PlayerTextDrawSetString(playerid, PlayerText:text, AmxString:string) = PlayerTextDrawSetString;
 
 
