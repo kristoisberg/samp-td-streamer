@@ -17,7 +17,8 @@ static stock _TDS_IncludeStates() <_ALS : _ALS_go> {}
 	forward%0(%1); \
 	public%0(%1) <_ALS : _ALS_x0, _ALS : _ALS_x1> { return 1; } \
 	public%0(%1) <> { return 1; }
-
+	
+#define INVALID_TEXTDRAW_EXTRA_ID 	(cellmin)
 
 enum _:E_TD_STREAMER_PROPERTIES {
     E_TD_FONT,
