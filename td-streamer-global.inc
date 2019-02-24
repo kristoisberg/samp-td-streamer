@@ -170,7 +170,7 @@ public OnScriptInit() {
 #if defined _ALS_OnScriptInit
     #undef OnScriptInit
 #else
-	#define _ALS_OnScriptInit
+    #define _ALS_OnScriptInit
 #endif
 #define OnScriptInit() TDSG_OnScriptInit() <_ALS : _ALS_go>
 
@@ -204,7 +204,7 @@ public OnScriptExit() {
 #if defined _ALS_OnScriptExit
     #undef OnScriptExit
 #else
-	#define _ALS_OnScriptExit
+    #define _ALS_OnScriptExit
 #endif
 #define OnScriptExit() TDSG_OnScriptExit() <_ALS : _ALS_go>
 
@@ -238,7 +238,7 @@ public OnPlayerDisconnect(playerid, reason) {
 #if defined _ALS_OnPlayerDisconnect
     #undef OnPlayerDisconnect
 #else
-	#define _ALS_OnPlayerDisconnect
+    #define _ALS_OnPlayerDisconnect
 #endif
 #define OnPlayerDisconnect(%0) TDSG_OnPlayerDisconnect(%0) <_ALS : _ALS_go>
 
@@ -270,7 +270,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid) {
 #if defined _ALS_OnPlayerClickTextDraw
     #undef OnPlayerClickTextDraw
 #else
-	#define _ALS_OnPlayerClickTextDraw
+    #define _ALS_OnPlayerClickTextDraw
 #endif
 #define OnPlayerClickTextDraw(%0) TDSG_OnPlayerClickTextDraw(%0) <_ALS : _ALS_go>
 
