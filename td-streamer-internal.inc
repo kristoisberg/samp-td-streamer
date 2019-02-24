@@ -45,7 +45,10 @@ enum _:E_TD_STREAMER_PROPERTIES {
     Float:E_TD_PREVIEW_ROT_X,
     Float:E_TD_PREVIEW_ROT_Y,
     Float:E_TD_PREVIEW_ROT_Z,
-    Float:E_TD_PREVIEW_ZOOM
+    Float:E_TD_PREVIEW_ZOOM,
+    
+    E_TD_EXTRA1,
+    E_TD_EXTRA2
 }
 
 new TDDefaultProperties[E_TD_STREAMER_PROPERTIES] = {
