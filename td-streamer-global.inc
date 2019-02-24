@@ -26,7 +26,10 @@ static enum _:E_TD_STREAMER_GLOBAL_DATA {
     Float:E_TD_POS_X,
     Float:E_TD_POS_Y,
 
-    E_TD_PROPERTIES[E_TD_STREAMER_PROPERTIES]
+    E_TD_PROPERTIES[E_TD_STREAMER_PROPERTIES],
+    
+    E_TD_EXTRA_1,
+    E_TD_EXTRA_2
 }
 
 
@@ -286,6 +289,9 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
 
     data[E_TD_POS_X] = x;
     data[E_TD_POS_Y] = y;
+    
+    data[E_TD_EXTRA_1] = 0;
+    data[E_TD_EXTRA_2] = 0;
 
     PA_Init(data[E_TD_VISIBLE]);
     return Text:list_add_arr(TDData, data);
@@ -308,6 +314,9 @@ stock Text:TextDrawCreate_s(Float:x, Float:y, String:text) {
 
     data[E_TD_POS_X] = x;
     data[E_TD_POS_Y] = y;
+    
+    data[E_TD_EXTRA_1] = 0;
+    data[E_TD_EXTRA_2] = 0;
 
     PA_Init(data[E_TD_VISIBLE]);
     return Text:list_add_arr(TDData, data);
@@ -1296,3 +1305,46 @@ stock TDS_TextDrawGetPreviewVehCol(Text:text, &color1, &color2) {
     #define _ALS_TextDrawGetPreviewVehCol
 #endif
 #define TextDrawGetPreviewVehCol TDS_TextDrawGetPreviewVehCol
+
+
+stock TDS_TextDrawSetExtraID(Text:text, extra1, extra2 = 0) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    data[E_TD_EXTRA_1] = extra1;
+    data[E_TD_EXTRA_2] = extra2;
+
+    _SetTextDrawData(id, data);
+    return 1;
+}
+
+#if defined _ALS_TextDrawSetExtraID
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TextDrawSetExtraID
+#endif
+#define TextDrawSetExtraID TDS_TextDrawSetExtraID
+
+
+stock TDS_TextDrawGetExtraID(Text:text, &extra1, &extra2 = 0) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    extra1 = data[E_TD_EXTRA_1];
+    extra2 = data[E_TD_EXTRA_2];
+
+    return 1;
+}
+
+#if defined _ALS_TDS_TextDrawGetExtraID
+    #error TextDraw streamer must be the first library to hook any textdraw functions!
+#else
+    #define _ALS_TDS_TextDrawGetExtraID
+#endif
+#define TDS_TextDrawGetExtraID TDS_TDS_TextDrawGetExtraID
