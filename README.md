@@ -51,99 +51,99 @@ The following functions are either modified or added by this library:
 ### td-streamer-global.inc
 
 ```pawn
-Text:TextDrawCreate(Float:x, Float:y, const text[])
-Text:TextDrawCreate_s(Float:x, Float:y, String:text)
-IsValidTextDraw(Text:text)
-TextDrawDestroy(Text:text)
-TextDrawShowForPlayer(playerid, Text:text)
-TextDrawHideForPlayer(playerid, Text:text)
-TextDrawShowForAll(Text:text)
-TextDrawHideForAll(Text:text)
-IsTextDrawVisibleForPlayer(playerid, Text:text)
-TextDrawSetString(Text:text, const string[])
-TextDrawGetString(Text:text, string[], len = sizeof(string))
-TextDrawSetString_s(Text:text, String:string)
-String:TextDrawGetString_s(Text:text)
-TextDrawSetPos(Text:text, Float:x, Float:y) // TextDrawSetPosition also works if SKY is included
-TextDrawGetPos(Text:text, &Float:x, &Float:y)
-TextDrawLetterSize(Text:text, Float:x, Float:y)
-TextDrawGetLetterSize(Text:text, &Float:x, &Float:y)
-TextDrawTextSize(Text:text, Float:x, Float:y)
-TextDrawGetTextSize(Text:text, &Float:x, &Float:y)
-TextDrawColor(Text:text, color)
-TextDrawGetColor(Text:text)
-TextDrawBoxColor(Text:text, color)
-TextDrawGetBoxColor(Text:text)
-TextDrawBackgroundColor(Text:text, color)
-TextDrawGetBackgroundColor(Text:text)
-TextDrawSetShadow(Text:text, size)
-TextDrawGetShadow(Text:text)
-TextDrawSetOutline(Text:text, size)
-TextDrawGetOutline(Text:text)
-TextDrawFont(Text:text, font)
-TextDrawGetFont(Text:text)
-TextDrawUseBox(Text:text, use)
-TextDrawIsBox(Text:text)
-TextDrawSetProportional(Text:text, set)
-TextDrawIsProportional(Text:text)
-TextDrawSetSelectable(Text:text, set)
-TextDrawIsSelectable(Text:text)
-TextDrawAlignment(Text:text, alignment)
-TextDrawGetAlignment(Text:text)
-TextDrawSetPreviewModel(Text:text, model)
-TextDrawGetPreviewModel(Text:text)
-TextDrawSetPreviewRot(Text:text, Float:x, Float:y, Float:z, Float:zoom = 1.0)
-TextDrawGetPreviewRot(Text:text, &Float:x, &Float:y, &Float:z, &Float:zoom)
-TextDrawSetPreviewVehCol(Text:text, color1, color2)
-TextDrawGetPreviewVehCol(Text:text, &color1, &color2)
+Text:TextDrawCreate(Float:x, Float:y, const text[]);
+Text:TextDrawCreate_s(Float:x, Float:y, String:text);
+IsValidTextDraw(Text:text);
+TextDrawDestroy(Text:text);
+TextDrawShowForPlayer(playerid, Text:text);
+TextDrawHideForPlayer(playerid, Text:text);
+TextDrawShowForAll(Text:text);
+TextDrawHideForAll(Text:text);
+IsTextDrawVisibleForPlayer(playerid, Text:text);
+TextDrawSetString(Text:text, const string[]);
+TextDrawGetString(Text:text, string[], len = sizeof(string));
+TextDrawSetString_s(Text:text, String:string);
+String:TextDrawGetString_s(Text:text);
+TextDrawSetPos(Text:text, Float:x, Float:y); // TextDrawSetPosition also works if SKY is included
+TextDrawGetPos(Text:text, &Float:x, &Float:y);
+TextDrawLetterSize(Text:text, Float:x, Float:y);
+TextDrawGetLetterSize(Text:text, &Float:x, &Float:y);
+TextDrawTextSize(Text:text, Float:x, Float:y);
+TextDrawGetTextSize(Text:text, &Float:x, &Float:y);
+TextDrawColor(Text:text, color);
+TextDrawGetColor(Text:text);
+TextDrawBoxColor(Text:text, color);
+TextDrawGetBoxColor(Text:text);
+TextDrawBackgroundColor(Text:text, color);
+TextDrawGetBackgroundColor(Text:text);
+TextDrawSetShadow(Text:text, size);
+TextDrawGetShadow(Text:text);
+TextDrawSetOutline(Text:text, size);
+TextDrawGetOutline(Text:text);
+TextDrawFont(Text:text, font);
+TextDrawGetFont(Text:text);
+TextDrawUseBox(Text:text, use);
+TextDrawIsBox(Text:text);
+TextDrawSetProportional(Text:text, set);
+TextDrawIsProportional(Text:text);
+TextDrawSetSelectable(Text:text, set);
+TextDrawIsSelectable(Text:text);
+TextDrawAlignment(Text:text, alignment);
+TextDrawGetAlignment(Text:text);
+TextDrawSetPreviewModel(Text:text, model);
+TextDrawGetPreviewModel(Text:text);
+TextDrawSetPreviewRot(Text:text, Float:x, Float:y, Float:z, Float:zoom = 1.0);
+TextDrawGetPreviewRot(Text:text, &Float:x, &Float:y, &Float:z, &Float:zoom);
+TextDrawSetPreviewVehCol(Text:text, color1, color2);
+TextDrawGetPreviewVehCol(Text:text, &color1, &color2);
 ```
 
 
 ### td-streamer-player.inc
 
 ```pawn
-PlayerText:CreatePlayerTextDraw(playerid, Float:x, Float:y, const text[])
-PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text)
-PlayerTextDrawDestroy(playerid, PlayerText:text)
-PlayerTextDrawShow(playerid, PlayerText:text)
-PlayerTextDrawHide(playerid, PlayerText:text)
-IsPlayerTextDrawVisible(playerid, PlayerText:text)
-PlayerTextDrawSetString(playerid, PlayerText:text, const string[])
-PlayerTextDrawGetString(playerid, PlayerText:text, string[], len = sizeof(string))
-PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string)
-String:PlayerTextDrawGetString_s(playerid, PlayerText:text)
-PlayerTextDrawSetPos(playerid, PlayerText:text, Float:x, Float:y) // PlayerTextDrawSetPosition also works if SKY is included
-PlayerTextDrawGetPos(playerid, PlayerText:text, &Float:x, &Float:y)
-PlayerTextDrawLetterSize(playerid, PlayerText:text, Float:x, Float:y)
-PlayerTextDrawGetLetterSize(playerid, PlayerText:text, &Float:x, &Float:y)
-PlayerTextDrawTextSize(playerid, PlayerText:text, Float:x, Float:y)
-PlayerTextDrawGetTextSize(playerid, PlayerText:text, &Float:x, &Float:y)
-PlayerTextDrawColor(playerid, PlayerText:text, color)
-PlayerTextDrawGetColor(playerid, PlayerText:text)
-PlayerTextDrawBoxColor(playerid, PlayerText:text, color)
-PlayerTextDrawGetBoxColor(playerid, PlayerText:text)
-PlayerTextDrawBackgroundColor(playerid, PlayerText:text, color)
-PlayerTextDrawGetBackgroundColor(playerid, PlayerText:text)
-PlayerTextDrawSetShadow(playerid, PlayerText:text, size)
-PlayerTextDrawGetShadow(playerid, PlayerText:text)
-PlayerTextDrawSetOutline(playerid, PlayerText:text, size)
-PlayerTextDrawGetOutline(playerid, PlayerText:text)
-PlayerTextDrawFont(playerid, PlayerText:text, font)
-PlayerTextDrawGetFont(playerid, PlayerText:text)
-PlayerTextDrawUseBox(playerid, PlayerText:text, use)
-PlayerTextDrawIsBox(playerid, PlayerText:text)
-PlayerTextDrawSetProportional(playerid, PlayerText:text, set)
-PlayerTextDrawIsProportional(playerid, PlayerText:text)
-PlayerTextDrawSetSelectable(playerid, PlayerText:text, set)
-PlayerTextDrawIsSelectable(playerid, PlayerText:text)
-PlayerTextDrawAlignment(playerid, PlayerText:text, alignment)
-PlayerTextDrawGetAlignment(playerid, PlayerText:text)
-PlayerTextDrawSetPreviewModel(playerid, PlayerText:text, model)
-PlayerTextDrawGetPreviewModel(playerid, PlayerText:text)
-PlayerTextDrawSetPreviewRot(playerid, PlayerText:text, Float:x, Float:y, Float:z, Float:zoom = 1.0)
-PlayerTextDrawGetPreviewRot(playerid, PlayerText:text, &Float:x, &Float:y, &Float:z, &Float:zoom)
-PlayerTextDrawSetPreviewVehCol(playerid, PlayerText:text, color1, color2)
-PlayerTextDrawGetPreviewVehCol(playerid, PlayerText:text, &color1, &color2)
+PlayerText:CreatePlayerTextDraw(playerid, Float:x, Float:y, const text[]);
+PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text);
+PlayerTextDrawDestroy(playerid, PlayerText:text);
+PlayerTextDrawShow(playerid, PlayerText:text);
+PlayerTextDrawHide(playerid, PlayerText:text);
+IsPlayerTextDrawVisible(playerid, PlayerText:text);
+PlayerTextDrawSetString(playerid, PlayerText:text, const string[]);
+PlayerTextDrawGetString(playerid, PlayerText:text, string[], len = sizeof(string));
+PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string);
+String:PlayerTextDrawGetString_s(playerid, PlayerText:text);
+PlayerTextDrawSetPos(playerid, PlayerText:text, Float:x, Float:y); // PlayerTextDrawSetPosition also works if SKY is included
+PlayerTextDrawGetPos(playerid, PlayerText:text, &Float:x, &Float:y);
+PlayerTextDrawLetterSize(playerid, PlayerText:text, Float:x, Float:y);
+PlayerTextDrawGetLetterSize(playerid, PlayerText:text, &Float:x, &Float:y);
+PlayerTextDrawTextSize(playerid, PlayerText:text, Float:x, Float:y);
+PlayerTextDrawGetTextSize(playerid, PlayerText:text, &Float:x, &Float:y);
+PlayerTextDrawColor(playerid, PlayerText:text, color);
+PlayerTextDrawGetColor(playerid, PlayerText:text);
+PlayerTextDrawBoxColor(playerid, PlayerText:text, color);
+PlayerTextDrawGetBoxColor(playerid, PlayerText:text);
+PlayerTextDrawBackgroundColor(playerid, PlayerText:text, color);
+PlayerTextDrawGetBackgroundColor(playerid, PlayerText:text);
+PlayerTextDrawSetShadow(playerid, PlayerText:text, size);
+PlayerTextDrawGetShadow(playerid, PlayerText:text);
+PlayerTextDrawSetOutline(playerid, PlayerText:text, size);
+PlayerTextDrawGetOutline(playerid, PlayerText:text);
+PlayerTextDrawFont(playerid, PlayerText:text, font);
+PlayerTextDrawGetFont(playerid, PlayerText:text);
+PlayerTextDrawUseBox(playerid, PlayerText:text, use);
+PlayerTextDrawIsBox(playerid, PlayerText:text);
+PlayerTextDrawSetProportional(playerid, PlayerText:text, set);
+PlayerTextDrawIsProportional(playerid, PlayerText:text);
+PlayerTextDrawSetSelectable(playerid, PlayerText:text, set);
+PlayerTextDrawIsSelectable(playerid, PlayerText:text);
+PlayerTextDrawAlignment(playerid, PlayerText:text, alignment);
+PlayerTextDrawGetAlignment(playerid, PlayerText:text);
+PlayerTextDrawSetPreviewModel(playerid, PlayerText:text, model);
+PlayerTextDrawGetPreviewModel(playerid, PlayerText:text);
+PlayerTextDrawSetPreviewRot(playerid, PlayerText:text, Float:x, Float:y, Float:z, Float:zoom = 1.0);
+PlayerTextDrawGetPreviewRot(playerid, PlayerText:text, &Float:x, &Float:y, &Float:z, &Float:zoom);
+PlayerTextDrawSetPreviewVehCol(playerid, PlayerText:text, color1, color2);
+PlayerTextDrawGetPreviewVehCol(playerid, PlayerText:text, &color1, &color2);
 ```
 
 
