@@ -1307,7 +1307,7 @@ stock TDS_TextDrawGetPreviewVehCol(Text:text, &color1, &color2) {
 #define TextDrawGetPreviewVehCol TDS_TextDrawGetPreviewVehCol
 
 
-stock TextDrawSetExtraID(Text:text, extra1, extra2 = 0) {
+stock TextDrawSetExtraID(Text:text, extra1, extra2 = INVALID_TEXTDRAW_EXTRA_ID) {
     new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
 
     if (!_GetTextDrawData(id, data)) {
@@ -1322,7 +1322,7 @@ stock TextDrawSetExtraID(Text:text, extra1, extra2 = 0) {
 }
 
 
-stock TextDrawGetExtraID(Text:text, &extra1, &extra2 = 0) {
+stock TextDrawGetExtraID(Text:text, &extra1, &extra2 = INVALID_TEXTDRAW_EXTRA_ID) {
     new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
 
     if (!_GetTextDrawData(id, data)) {
