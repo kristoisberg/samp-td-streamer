@@ -110,7 +110,7 @@ Test:Global() {
     TextDrawSetExtraID(id, 23, 67);
     new extra1, extra2;
     TextDrawGetExtraID(id, extra1, extra2);
-    ASSERT(extra1 == 23 && extra2 == 67);
+    ASSERT((extra1 == 23 && extra2 == 67));
 }
 
 
