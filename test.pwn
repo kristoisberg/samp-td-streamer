@@ -187,6 +187,7 @@ Test:Player() {
     PlayerTextDrawSetExtraID(playerid, id, 55, 32);
     new extra1, extra2;
     PlayerTextDrawGetExtraID(playerid, id, extra1, extra2);
+    ASSERT((extra1 == 55 && extra2 == 32));
 }
 
 
