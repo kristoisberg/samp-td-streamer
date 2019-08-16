@@ -34,7 +34,7 @@ static enum _:E_TD_STREAMER_PLAYER_DATA {
 
 
 static List:TDData[MAX_PLAYERS];
-static TDStreamerID[MAX_PLAYERS][MAX_PLAYER_TEXT_DRAWS];
+static TDStreamerID[MAX_PLAYERS][_:MAX_PLAYER_TEXT_DRAWS];
 
 
 native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
@@ -172,7 +172,7 @@ public OnScriptInit() {
     foreach (new playerid : Player) {
         TDData[playerid] = list_new();
 
-        memset(TDStreamerID[playerid], -1, MAX_PLAYER_TEXT_DRAWS);
+        memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
     }
 
     return TDSP_OnScriptInit();
@@ -229,7 +229,7 @@ public OnPlayerConnect(playerid) {
 
     TDData[playerid] = list_new();
 
-    memset(TDStreamerID[playerid], -1, MAX_PLAYER_TEXT_DRAWS);
+    memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
 
     return TDSP_OnPlayerConnect(playerid);
 }
