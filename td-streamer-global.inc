@@ -348,7 +348,9 @@ stock TDS_TextDrawDestroy(Text:text) {
         _DestroyTextDraw(data);
     }
 
-    str_delete(data[E_TD_STRING]);
+    if (str_valid(data[E_TD_STRING])) {
+        str_delete(data[E_TD_STRING]);
+    }
 
     list_set_var(TDData, id, VAR_NULL);
     return 1;
