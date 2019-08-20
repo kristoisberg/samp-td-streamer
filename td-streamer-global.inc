@@ -42,7 +42,7 @@ native _TDS_TextDrawSetString(Text:text, AmxString:string) = TextDrawSetString;
 
 
 static stock bool:_IsValidTextDraw(id) {
-    return list_size(TDData) > id && list_sizeof(TDData, id) != 0;
+    return list_valid(TDData) && list_size(TDData) > id && list_sizeof(TDData, id) != 0;
 }
 
 

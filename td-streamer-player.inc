@@ -46,7 +46,7 @@ static stock bool:_IsValidTextDraw(playerid, id) {
         return false;
     }
 
-    return list_size(TDData[playerid]) > id && list_sizeof(TDData[playerid], id) != 0;
+    return list_valid(TDData[playerid]) && list_size(TDData[playerid]) > id && list_sizeof(TDData[playerid], id) != 0;
 }
 
 
