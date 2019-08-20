@@ -260,7 +260,9 @@ public OnPlayerDisconnect(playerid, reason) {
             PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
         }
 
-        str_delete(data[E_TD_STRING]);
+        if (str_valid(data[E_TD_STRING])) {
+            str_delete(data[E_TD_STRING]);
+        }
     }
 
     list_delete(TDData[playerid]);
