@@ -12,6 +12,7 @@ Test:Global() {
     ASSERT(IsValidTextDraw(Text:0) == 0);
 
     new Text:id = TextDrawCreate(10.0, 10.0, "test");
+    printf("id: %i", _:id);
     ASSERT(id == Text:0);
     ASSERT(IsValidTextDraw(id) == 1);
 
@@ -110,12 +111,18 @@ Test:Global() {
     ASSERT(IsValidTextDraw(id) == 0);
 
     id = TextDrawCreate_s(10.0, 10.0, str_new("test"));
-    ASSERT(_:id == 1);
+    printf("id: %i", _:id);
+    ASSERT(id == Text:0);
     ASSERT(IsValidTextDraw(id) == 1);
 
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("test")));
     TextDrawSetString_s(id, str_new("asd"));
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("asd")));
+
+    id = TextDrawCreate_s(10.0, 10.0, str_new("test"));
+    printf("id: %i", _:id);
+    ASSERT(id == Text:1);
+    ASSERT(IsValidTextDraw(id) == 1);
 }
 
 
