@@ -5,7 +5,7 @@
 This library removes the limits on how many textdraws can be created at the same time (2048 global and 256 per-player textdraws as of 0.3.7 and 0.3.DL). The library works by only creating the textdraws when they are visible for anyone. This is a rewrite of the `PlayerTextDrawStreamer` include, originally created by theYiin and later maintained by me. Some benefits over the old include:
 
 * Support for global textdraws.
-* No limits at all - the old include used static arrays meaning that the limits were still there, they were just higher. This library uses PawnPlus for dynamic containers and dynamically allocated strings, meaning that
+* No limits at all - the old include used static arrays meaning that the limits were still there, they were just higher. This library uses PawnPlus for dynamic containers and dynamically allocated strings, meaning that there is no limit on how many textdraws can be created.
 * Smaller footprint on the binary size - Again, static arrays are replaced with dynamic memory, the old include increased the binary size by several megabytes and also increased the compilation time drastically, compared to this the footprint of this library is almost non-existent. 
 
 **\*** - Technically, this library does not do any streaming. However, in the SA-MP community, the name "streamer" is often associated with something that removes hardcoded limits from something, therefore this name is used to help people find the library.
