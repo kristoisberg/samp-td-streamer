@@ -196,9 +196,7 @@ public OnScriptExit() {
             TextDrawDestroy(data[E_TD_INTERNAL_ID]);
         }
 
-        if (str_valid(data[E_TD_STRING])) {
-            str_delete(data[E_TD_STRING]);
-        }
+        str_delete(data[E_TD_STRING]);
     }
 
     pool_delete(TDData);
@@ -348,10 +346,7 @@ stock TDS_TextDrawDestroy(Text:text) {
         _DestroyTextDraw(data);
     }
 
-    if (str_valid(data[E_TD_STRING])) {
-        str_delete(data[E_TD_STRING]);
-    }
-
+    str_delete(data[E_TD_STRING]);
     pool_remove(TDData, id);
     return 1;
 }

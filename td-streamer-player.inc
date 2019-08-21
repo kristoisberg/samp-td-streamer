@@ -260,9 +260,7 @@ public OnPlayerDisconnect(playerid, reason) {
             PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
         }
 
-        if (str_valid(data[E_TD_STRING])) {
-            str_delete(data[E_TD_STRING]);
-        }
+        str_delete(data[E_TD_STRING]);
     }
 
     pool_delete(TDData[playerid]);
@@ -382,10 +380,7 @@ stock TDS_PlayerTextDrawDestroy(playerid, PlayerText:text) {
         _DestroyTextDraw(playerid, data);
     }
 
-    if (str_valid(data[E_TD_STRING])) {
-        str_delete(data[E_TD_STRING]);
-    }
-
+    str_delete(data[E_TD_STRING]);
     pool_remove(TDData[playerid], id);
     return 1;
 }
