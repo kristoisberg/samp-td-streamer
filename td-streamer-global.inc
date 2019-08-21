@@ -196,9 +196,7 @@ public OnScriptExit() {
             TextDrawDestroy(data[E_TD_INTERNAL_ID]);
         }
 
-        if (str_valid(data[E_TD_STRING])) {
-            str_delete(data[E_TD_STRING]);
-        }
+        str_delete(data[E_TD_STRING]);
     }
 
     list_delete(TDData);
@@ -348,10 +346,7 @@ stock TDS_TextDrawDestroy(Text:text) {
         _DestroyTextDraw(data);
     }
 
-    if (str_valid(data[E_TD_STRING])) {
-        str_delete(data[E_TD_STRING]);
-    }
-
+    str_delete(data[E_TD_STRING]);
     list_set_var(TDData, id, VAR_NULL);
     return 1;
 }
@@ -522,12 +517,7 @@ stock TDS_TextDrawSetString(Text:text, const string[]) {
         TextDrawSetString(data[E_TD_INTERNAL_ID], string);
     }
 
-    if (str_valid(data[E_TD_STRING])) {
-        str_delete(data[E_TD_STRING]);
-    }
-
-    data[E_TD_STRING] = str_acquire(str_new(string));
-
+    str_set(data[E_TD_STRING], str_new(string));
     _SetTextDrawData(id, data);
     return 1;
 }
@@ -570,12 +560,7 @@ stock TextDrawSetString_s(Text:text, String:string) {
         _TDS_TextDrawSetString(data[E_TD_INTERNAL_ID], string);
     }
 
-    if (str_valid(data[E_TD_STRING])) {
-        str_delete(data[E_TD_STRING]);
-    }
-
-    data[E_TD_STRING] = str_acquire(str_clone(string));
-
+    str_set(data[E_TD_STRING], string);
     _SetTextDrawData(id, data);
     return 1;
 }
