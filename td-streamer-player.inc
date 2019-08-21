@@ -205,7 +205,9 @@ public OnScriptExit() {
                 PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
             }
 
-            str_delete(data[E_TD_STRING]);
+            if (str_valid(data[E_TD_STRING])) {
+                str_delete(data[E_TD_STRING]);
+            }
         }
 
         list_delete(TDData[playerid]);
@@ -481,7 +483,12 @@ stock TDS_PlayerTextDrawSetString(playerid, PlayerText:text, const string[]) {
         PlayerTextDrawSetString(playerid, data[E_TD_INTERNAL_ID], string);
     }
 
-    str_set(data[E_TD_STRING], str_new(string));
+    if (str_valid(data[E_TD_STRING])) {
+        str_delete(data[E_TD_STRING]);
+    }
+
+    data[E_TD_STRING] = str_acquire(str_new(string));
+
     _SetTextDrawData(playerid, id, data);
     return 1;
 }
@@ -524,7 +531,12 @@ stock PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string) {
         _TDS_PlayerTextDrawSetString(playerid, data[E_TD_INTERNAL_ID], string);
     }
 
-    str_set(data[E_TD_STRING], string);
+    if (str_valid(data[E_TD_STRING])) {
+        str_delete(data[E_TD_STRING]);
+    }
+
+    data[E_TD_STRING] = str_acquire(str_clone(string));
+
     _SetTextDrawData(playerid, id, data);
     return 1;
 }

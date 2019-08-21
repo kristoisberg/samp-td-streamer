@@ -522,7 +522,12 @@ stock TDS_TextDrawSetString(Text:text, const string[]) {
         TextDrawSetString(data[E_TD_INTERNAL_ID], string);
     }
 
-    str_set(data[E_TD_STRING], str_new(string));
+    if (str_valid(data[E_TD_STRING])) {
+        str_delete(data[E_TD_STRING]);
+    }
+
+    data[E_TD_STRING] = str_acquire(str_new(string));
+
     _SetTextDrawData(id, data);
     return 1;
 }
@@ -565,7 +570,12 @@ stock TextDrawSetString_s(Text:text, String:string) {
         _TDS_TextDrawSetString(data[E_TD_INTERNAL_ID], string);
     }
 
-    str_set(data[E_TD_STRING], string);
+    if (str_valid(data[E_TD_STRING])) {
+        str_delete(data[E_TD_STRING]);
+    }
+
+    data[E_TD_STRING] = str_acquire(str_clone(string));
+
     _SetTextDrawData(id, data);
     return 1;
 }
