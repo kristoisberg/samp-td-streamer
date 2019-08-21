@@ -34,7 +34,7 @@ static enum _:E_TD_STREAMER_GLOBAL_DATA {
 
 
 static List:TDData;
-static TDStreamerID[MAX_TEXT_DRAWS] = {-1, ...};
+static TDStreamerID[_:MAX_TEXT_DRAWS] = {-1, ...};
 
 
 native Text:_TDS_TextDrawCreate(Float:x, Float:y, AmxString:text) = TextDrawCreate;
@@ -221,7 +221,7 @@ public OnPlayerDisconnect(playerid, reason) {
 
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    for (new id; id < MAX_TEXT_DRAWS; id++) {
+    for (new id; id < _:MAX_TEXT_DRAWS; id++) {
         if (TDStreamerID[id] != -1) {
             _GetTextDrawData(TDStreamerID[id], data);
 
