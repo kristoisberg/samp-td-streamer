@@ -5,7 +5,7 @@
 	"output": "test.amx",
 	"dependencies": [
 		"sampctl/samp-stdlib",
-		"IllidanS4/PawnPlus",
+		"IllidanS4/PawnPlus:v1.1",
 		"pawn-lang/YSI-Includes@5.x"
 	],
 	"dev_dependencies": [
