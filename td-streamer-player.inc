@@ -33,7 +33,7 @@ static enum _:E_TD_STREAMER_PLAYER_DATA {
 }
 
 
-static List:TDData[MAX_PLAYERS];
+static Pool:TDData[MAX_PLAYERS];
 static TDStreamerID[MAX_PLAYERS][_:MAX_PLAYER_TEXT_DRAWS];
 
 
@@ -46,7 +46,7 @@ static stock bool:_IsValidTextDraw(playerid, id) {
         return false;
     }
 
-    return list_valid(TDData[playerid]) && list_size(TDData[playerid]) > id && list_sizeof(TDData[playerid], id) != 0;
+    return pool_valid(TDData[playerid]) && pool_has(TDData[playerid], id);
 }
 
 
@@ -55,7 +55,7 @@ static stock bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]
         return false;
     }
 
-    list_get_arr(TDData[playerid], id, data);
+    pool_get_arr(TDData[playerid], id, data);
     return true;
 }
 
@@ -65,7 +65,7 @@ static stock bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER
         return false;
     }
 
-    list_set_arr(TDData[playerid], id, data);
+    pool_set_arr(TDData[playerid], id, data);
     return true;
 }
 
@@ -170,7 +170,7 @@ public OnScriptInit() {
     state _ALS : _ALS_go;
 
     foreach (new playerid : Player) {
-        TDData[playerid] = list_new();
+        TDData[playerid] = pool_new();
 
         memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
     }
@@ -194,7 +194,7 @@ public OnScriptExit() {
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     foreach (new playerid : Player) {
-        for (new Iter:id = list_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
+        for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
             if (!iter_sizeof(id)) {
                 continue;
             }
@@ -208,7 +208,7 @@ public OnScriptExit() {
             str_delete(data[E_TD_STRING]);
         }
 
-        list_delete(TDData[playerid]);
+        pool_delete(TDData[playerid]);
     }
 
     return TDSP_OnScriptExit();
@@ -227,7 +227,7 @@ _TDS_FORWARD TDSP_OnScriptExit();
 public OnPlayerConnect(playerid) {
     state _ALS : _ALS_go;
 
-    TDData[playerid] = list_new();
+    TDData[playerid] = pool_new();
 
     memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
 
@@ -249,7 +249,7 @@ public OnPlayerDisconnect(playerid, reason) {
 
     new data[E_TD_STREAMER_PLAYER_DATA];
 
-    for (new Iter:id = list_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
+    for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
         if (!iter_sizeof(id)) {
             continue;
         }
@@ -265,7 +265,7 @@ public OnPlayerDisconnect(playerid, reason) {
         }
     }
 
-    list_delete(TDData[playerid]);
+    pool_delete(TDData[playerid]);
 
     return TDSP_OnPlayerDisconnect(playerid, reason);
 }
@@ -326,7 +326,7 @@ stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text
     data[E_TD_EXTRA_1] = INVALID_TEXTDRAW_EXTRA_ID;
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
-    return PlayerText:list_add_arr(TDData[playerid], data);
+    return PlayerText:pool_add_arr(TDData[playerid], data);
 }
 
 #if defined _ALS_CreatePlayerTextDraw
@@ -355,7 +355,7 @@ stock PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text)
     data[E_TD_EXTRA_1] = INVALID_TEXTDRAW_EXTRA_ID;
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
-    return PlayerText:list_add_arr(TDData[playerid], data);
+    return PlayerText:pool_add_arr(TDData[playerid], data);
 }
 
 
@@ -386,7 +386,7 @@ stock TDS_PlayerTextDrawDestroy(playerid, PlayerText:text) {
         str_delete(data[E_TD_STRING]);
     }
 
-    list_set(TDData[playerid], id, VAR_NULL);
+    pool_remove(TDData[playerid], id);
     return 1;
 }
 

@@ -33,7 +33,7 @@ static enum _:E_TD_STREAMER_GLOBAL_DATA {
 }
 
 
-static List:TDData;
+static Pool:TDData;
 static TDStreamerID[_:MAX_TEXT_DRAWS] = {-1, ...};
 
 
@@ -42,7 +42,7 @@ native _TDS_TextDrawSetString(Text:text, AmxString:string) = TextDrawSetString;
 
 
 static stock bool:_IsValidTextDraw(id) {
-    return list_valid(TDData) && list_size(TDData) > id && list_sizeof(TDData, id) != 0;
+    return pool_valid(TDData) && pool_has(TDData, id);
 }
 
 
@@ -51,7 +51,7 @@ static stock bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
         return false;
     }
 
-    list_get_arr(TDData, id, data, sizeof(data));
+    pool_get_arr(TDData, id, data, sizeof(data));
     return true;
 }
 
@@ -61,7 +61,7 @@ static stock bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]) {
         return false;
     }
 
-    list_set_arr(TDData, id, data);
+    pool_set_arr(TDData, id, data);
     return true;
 }
 
@@ -165,7 +165,7 @@ static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
 public OnScriptInit() {
     state _ALS : _ALS_go;
 
-    TDData = list_new();
+    TDData = pool_new();
 
     return TDSG_OnScriptInit();
 }
@@ -185,7 +185,7 @@ public OnScriptExit() {
 
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    for (new Iter:id = list_iter(TDData); iter_inside(id); iter_move_next(id)) {
+    for (new Iter:id = pool_iter(TDData); iter_inside(id); iter_move_next(id)) {
         if (!iter_sizeof(id)) {
             continue;
         }
@@ -201,7 +201,7 @@ public OnScriptExit() {
         }
     }
 
-    list_delete(TDData);
+    pool_delete(TDData);
 
     return TDSG_OnScriptExit();
 }
@@ -296,7 +296,7 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
     PA_Init(data[E_TD_VISIBLE]);
-    return Text:list_add_arr(TDData, data);
+    return Text:pool_add_arr(TDData, data);
 }
 
 #if defined _ALS_TextDrawCreate
@@ -321,7 +321,7 @@ stock Text:TextDrawCreate_s(Float:x, Float:y, String:text) {
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
     PA_Init(data[E_TD_VISIBLE]);
-    return Text:list_add_arr(TDData, data);
+    return Text:pool_add_arr(TDData, data);
 }
 
 
@@ -352,7 +352,7 @@ stock TDS_TextDrawDestroy(Text:text) {
         str_delete(data[E_TD_STRING]);
     }
 
-    list_set_var(TDData, id, VAR_NULL);
+    pool_remove(TDData, id);
     return 1;
 }
 
