@@ -6,22 +6,14 @@
 
 #include <a_samp>
 #include <PawnPlus>
-#include <YSI_Data\y_playerarray>
-#include <YSI_Data\y_iterate>
-#include <YSI_Server\y_scriptinit>
 
 #include "td-streamer-internal.inc"
-
-
-PRE_HOOK(TDSG)
-#undef CHAIN_ORDER
-#define CHAIN_ORDER @CO_TDSG
 
 
 static enum _:E_TD_STREAMER_GLOBAL_DATA {
     String:E_TD_STRING,
     Text:E_TD_INTERNAL_ID,
-    PlayerArray:E_TD_VISIBLE<MAX_PLAYERS>,
+    bool:E_TD_VISIBLE[MAX_PLAYERS],
 
     Float:E_TD_POS_X,
     Float:E_TD_POS_Y,
@@ -30,7 +22,7 @@ static enum _:E_TD_STREAMER_GLOBAL_DATA {
     E_TD_EXTRA_2,
 
     E_TD_PROPERTIES[E_TD_STREAMER_PROPERTIES]
-}
+};
 
 
 static Pool:TDData;
@@ -162,27 +154,28 @@ static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
 }
 
 
-public OnScriptInit() {
-    state _ALS : _ALS_go;
+static stock bool:_IsTextDrawVisibleForAnyone(const data[E_TD_STREAMER_GLOBAL_DATA]) {
+    for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
+        if (data[E_TD_VISIBLE][playerid]) {
+            return true;
+        }
+    }
 
-    TDData = pool_new();
-
-    return TDSG_OnScriptInit();
+    return false;
 }
 
-#if defined _ALS_OnScriptInit
-    #undef OnScriptInit
-#else
-    #define _ALS_OnScriptInit
-#endif
-#define OnScriptInit() TDSG_OnScriptInit() <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSG_OnScriptInit();
+forward public _pp@on_init@TDSG();
+public _pp@on_init@TDSG() {
+    TDData = pool_new();
+
+    pawn_register_callback("OnPlayerDisconnect", "TDSG_OnPlayerDisconnect");
+    pawn_register_callback("OnPlayerClickTextDraw", "TDSG_OnPlayerClickTextDraw", handler_return | handler_args);
+}
 
 
-public OnScriptExit() {
-    state _ALS : _ALS_go;
-
+forward public _pp@on_exit@TDSG();
+public _pp@on_exit@TDSG() {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     for (new Iter:id = pool_iter(TDData); iter_inside(id); iter_move_next(id)) {
@@ -200,33 +193,21 @@ public OnScriptExit() {
     }
 
     pool_delete(TDData);
-
-    return TDSG_OnScriptExit();
 }
 
-#if defined _ALS_OnScriptExit
-    #undef OnScriptExit
-#else
-    #define _ALS_OnScriptExit
-#endif
-#define OnScriptExit() TDSG_OnScriptExit() <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSG_OnScriptExit();
-
-
-public OnPlayerDisconnect(playerid, reason) {
-    state _ALS : _ALS_go;
-
+forward public TDSG_OnPlayerDisconnect(playerid, reason);
+public TDSG_OnPlayerDisconnect(playerid, reason) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     for (new id; id < _:MAX_TEXT_DRAWS; id++) {
         if (TDStreamerID[id] != -1) {
             _GetTextDrawData(TDStreamerID[id], data);
 
-            if (PA_Get(data[E_TD_VISIBLE], playerid)) {
-                PA_Set(data[E_TD_VISIBLE], playerid, false);
+            if (data[E_TD_VISIBLE][playerid]) {
+                data[E_TD_VISIBLE][playerid] = false;
 
-                if (!Bit_Count(data[E_TD_VISIBLE])) {
+                if (!_IsTextDrawVisibleForAnyone(data)) {
                     _DestroyTextDraw(data);
                 }
 
@@ -235,49 +216,35 @@ public OnPlayerDisconnect(playerid, reason) {
         }
     }
 
-    return TDSG_OnPlayerDisconnect(playerid, reason);
+    return false;
 }
 
-#if defined _ALS_OnPlayerDisconnect
-    #undef OnPlayerDisconnect
-#else
-    #define _ALS_OnPlayerDisconnect
-#endif
-#define OnPlayerDisconnect(%0) TDSG_OnPlayerDisconnect(%0) <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSG_OnPlayerDisconnect(playerid, reason);
-
-
-public OnPlayerClickTextDraw(playerid, Text:clickedid) {
-    state _ALS : _ALS_go;
-
+forward public TDSG_OnPlayerClickTextDraw(&ret, playerid, Text:clickedid);
+public TDSG_OnPlayerClickTextDraw(&ret, playerid, Text:clickedid) {
     if (clickedid == Text:INVALID_TEXT_DRAW) {
-        return TDSG_OnPlayerClickTextDraw(playerid, clickedid);
+        ret = 0;
+        return false;
     }
 
     new id = TDStreamerID[_:clickedid];
 
     if (id == -1) {
-        return 0;
+        ret = 0;
+        return false;
     }
 
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    if (!_GetTextDrawData(id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !PA_Get(data[E_TD_VISIBLE], playerid)) {
-        return 1;
+    if (!_GetTextDrawData(id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !data[E_TD_VISIBLE][playerid]) {
+        ret = 1;
+        return true;
     }
 
-    return TDSG_OnPlayerClickTextDraw(playerid, Text:id);
+    clickedid = Text:id;
+    ret = 1;
+    return false;
 }
-
-#if defined _ALS_OnPlayerClickTextDraw
-    #undef OnPlayerClickTextDraw
-#else
-    #define _ALS_OnPlayerClickTextDraw
-#endif
-#define OnPlayerClickTextDraw(%0) TDSG_OnPlayerClickTextDraw(%0) <_ALS : _ALS_go>
-
-_TDS_FORWARD TDSG_OnPlayerClickTextDraw(playerid, Text:clickedid);
 
 
 stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
@@ -293,7 +260,10 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
     data[E_TD_EXTRA_1] = INVALID_TEXTDRAW_EXTRA_ID;
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
-    PA_Init(data[E_TD_VISIBLE]);
+    for (new playerid; playerid < MAX_PLAYERS; playerid++) {
+        data[E_TD_VISIBLE][playerid] = false;
+    }
+
     return Text:pool_add_arr(TDData, data);
 }
 
@@ -318,7 +288,10 @@ stock Text:TextDrawCreate_s(Float:x, Float:y, String:text) {
     data[E_TD_EXTRA_1] = INVALID_TEXTDRAW_EXTRA_ID;
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
-    PA_Init(data[E_TD_VISIBLE]);
+    for (new playerid; playerid < MAX_PLAYERS; playerid++) {
+        data[E_TD_VISIBLE][playerid] = false;
+    }
+
     return Text:pool_add_arr(TDData, data);
 }
 
@@ -375,7 +348,7 @@ stock TDS_TextDrawShowForPlayer(playerid, Text:text) {
     }
 
     if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
-        PA_Set(data[E_TD_VISIBLE], playerid, true);
+        data[E_TD_VISIBLE][playerid] = true;
         TextDrawShowForPlayer(playerid, data[E_TD_INTERNAL_ID]);
 
         _SetTextDrawData(id, data);
@@ -403,12 +376,12 @@ stock TDS_TextDrawHideForPlayer(playerid, Text:text) {
         return 0;
     }
 
-    PA_Set(data[E_TD_VISIBLE], playerid, false);
+    data[E_TD_VISIBLE][playerid] = false;
 
     if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
         TextDrawHideForPlayer(playerid, data[E_TD_INTERNAL_ID]);
 
-        if (!Bit_Count(data[E_TD_VISIBLE])) {
+        if (!_IsTextDrawVisibleForAnyone(data)) {
             _DestroyTextDraw(data);
         }
     }
@@ -437,10 +410,12 @@ stock TDS_TextDrawShowForAll(Text:text) {
     }
 
     if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
-        foreach (new playerid : Player) {
-            PA_Set(data[E_TD_VISIBLE], playerid, true);
+        for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
+            if (IsPlayerConnected(playerid)) {
+                data[E_TD_VISIBLE][playerid] = true;
+            }
         }
-        
+
         TextDrawShowForAll(data[E_TD_INTERNAL_ID]);
 
         _SetTextDrawData(id, data);
@@ -464,7 +439,9 @@ stock TDS_TextDrawHideForAll(Text:text) {
         return 0;
     }
 
-    Bit_SetAll(data[E_TD_VISIBLE], false);
+    for (new playerid; playerid < MAX_PLAYERS; playerid++) {
+        data[E_TD_VISIBLE][playerid] = false;
+    }
 
     if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
         TextDrawHideForAll(data[E_TD_INTERNAL_ID]);
@@ -495,7 +472,7 @@ stock TDS_IsTextDrawVisibleForPlayer(playerid, Text:text) {
         return 0;
     }
 
-    return PA_Get(data[E_TD_VISIBLE], playerid);
+    return data[E_TD_VISIBLE][playerid];
 }
 
 #if defined _ALS_IsTextDrawVisibleForPlayer
@@ -504,6 +481,17 @@ stock TDS_IsTextDrawVisibleForPlayer(playerid, Text:text) {
     #define _ALS_IsTextDrawVisibleForPlayer
 #endif
 #define IsTextDrawVisibleForPlayer TDS_IsTextDrawVisibleForPlayer
+
+
+stock IsTextDrawVisibleForAnyone(Text:text) {
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+
+    if (!_GetTextDrawData(id, data)) {
+        return 0;
+    }
+
+    return _IsTextDrawVisibleForAnyone(data);
+}
 
 
 stock TDS_TextDrawSetString(Text:text, const string[]) {

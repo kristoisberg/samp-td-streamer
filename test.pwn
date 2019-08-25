@@ -12,7 +12,6 @@ Test:Global() {
     ASSERT(IsValidTextDraw(Text:0) == 0);
 
     new Text:id = TextDrawCreate(10.0, 10.0, "test");
-    printf("id: %i", _:id);
     ASSERT(id == Text:0);
     ASSERT(IsValidTextDraw(id) == 1);
 
@@ -21,6 +20,7 @@ Test:Global() {
 
     ASSERT(TextDrawShowForPlayer(INVALID_PLAYER_ID, id) == 0);
     ASSERT(IsTextDrawVisibleForPlayer(INVALID_PLAYER_ID, id) == 0);
+    ASSERT(IsTextDrawVisibleForAnyone(id) == 0);
     ASSERT(TextDrawHideForPlayer(INVALID_PLAYER_ID, id) == 0);
 
     new string[16];
@@ -111,7 +111,6 @@ Test:Global() {
     ASSERT(IsValidTextDraw(id) == 0);
 
     id = TextDrawCreate_s(10.0, 10.0, str_new("test"));
-    printf("id: %i", _:id);
     ASSERT(id == Text:0);
     ASSERT(IsValidTextDraw(id) == 1);
 
@@ -120,7 +119,6 @@ Test:Global() {
     ASSERT(str_eq(TextDrawGetString_s(id), str_new("asd")));
 
     id = TextDrawCreate_s(10.0, 10.0, str_new("test"));
-    printf("id: %i", _:id);
     ASSERT(id == Text:1);
     ASSERT(IsValidTextDraw(id) == 1);
 }

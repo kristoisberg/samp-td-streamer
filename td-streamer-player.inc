@@ -6,16 +6,8 @@
 
 #include <a_samp>
 #include <PawnPlus>
-#include <YSI_Data\y_iterate>
-#include <YSI_Server\y_scriptinit>
-#include <YSI_Core\y_utils>
 
 #include "td-streamer-internal.inc"
-
-
-PRE_HOOK(TDSP)
-#undef CHAIN_ORDER
-#define CHAIN_ORDER @CO_TDSP
 
 
 static enum _:E_TD_STREAMER_PLAYER_DATA {
@@ -30,7 +22,7 @@ static enum _:E_TD_STREAMER_PLAYER_DATA {
     E_TD_EXTRA_2,
 
     E_TD_PROPERTIES[E_TD_STREAMER_PROPERTIES]
-}
+};
 
 
 static Pool:TDData[MAX_PLAYERS];
@@ -166,87 +158,60 @@ static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
 }
 
 
-public OnScriptInit() {
-    state _ALS : _ALS_go;
+forward public _pp@on_init@TDSP();
+public _pp@on_init@TDSP() {
+    for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
+        if (IsPlayerConnected(playerid)) {
+            TDData[playerid] = pool_new();
 
-    foreach (new playerid : Player) {
-        TDData[playerid] = pool_new();
-
-        memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
+            memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
+        }
     }
 
-    return TDSP_OnScriptInit();
+    pawn_register_callback("OnPlayerConnect", "TDSP_OnPlayerConnect");
+    pawn_register_callback("OnPlayerDisconnect", "TDSP_OnPlayerConnect");
+    pawn_register_callback("OnPlayerClickPlayerTextDraw", "TDSP_OnPlayerClickPlayerTD", handler_return | handler_args);
 }
 
-#if defined _ALS_OnScriptInit
-    #undef OnScriptInit
-#else
-    #define _ALS_OnScriptInit
-#endif
-#define OnScriptInit() TDSP_OnScriptInit() <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSP_OnScriptInit();
-
-
-public OnScriptExit() {
-    state _ALS : _ALS_go;
-
+forward public _pp@on_exit@TDSP();
+public _pp@on_exit@TDSP() {
     new data[E_TD_STREAMER_PLAYER_DATA];
 
-    foreach (new playerid : Player) {
-        for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
-            if (!iter_sizeof(id)) {
-                continue;
+    for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
+        if (IsPlayerConnected(playerid)) {
+            for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
+                if (!iter_sizeof(id)) {
+                    continue;
+                }
+
+                iter_get_arr(id, data);
+
+                if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
+                    PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
+                }
+
+                str_delete(data[E_TD_STRING]);
             }
 
-            iter_get_arr(id, data);
-
-            if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
-                PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
-            }
-
-            str_delete(data[E_TD_STRING]);
+            pool_delete(TDData[playerid]);
         }
-
-        pool_delete(TDData[playerid]);
     }
-
-    return TDSP_OnScriptExit();
 }
 
-#if defined _ALS_OnScriptExit
-    #undef OnScriptExit
-#else
-    #define _ALS_OnScriptExit
-#endif
-#define OnScriptExit() TDSP_OnScriptExit() <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSP_OnScriptExit();
-
-
-public OnPlayerConnect(playerid) {
-    state _ALS : _ALS_go;
-
+forward public TDSP_OnPlayerConnect(playerid);
+public TDSP_OnPlayerConnect(playerid) {
     TDData[playerid] = pool_new();
 
     memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
 
-    return TDSP_OnPlayerConnect(playerid);
+    return false;
 }
 
-#if defined _ALS_OnPlayerConnect
-    #undef OnPlayerConnect
-#else
-    #define _ALS_OnPlayerConnect
-#endif
-#define OnPlayerConnect(%0) TDSP_OnPlayerConnect(%0) <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSP_OnPlayerConnect(playerid);
-
-
-public OnPlayerDisconnect(playerid, reason) {
-    state _ALS : _ALS_go;
-
+forward public TDSP_OnPlayerDisconnect(playerid, reason);
+public TDSP_OnPlayerDisconnect(playerid, reason) {
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
@@ -265,45 +230,30 @@ public OnPlayerDisconnect(playerid, reason) {
 
     pool_delete(TDData[playerid]);
 
-    return TDSP_OnPlayerDisconnect(playerid, reason);
+    return false;
 }
 
-#if defined _ALS_OnPlayerDisconnect
-    #undef OnPlayerDisconnect
-#else
-    #define _ALS_OnPlayerDisconnect
-#endif
-#define OnPlayerDisconnect(%0) TDSP_OnPlayerDisconnect(%0) <_ALS : _ALS_go>
 
-_TDS_FORWARD TDSP_OnPlayerDisconnect(playerid, reason);
-
-
-public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid) {
-    state _ALS : _ALS_go;
-
+forward public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid);
+public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid) {
     new id = TDStreamerID[playerid][_:playertextid];
 
-    if (id == -1) {
-        return 0;
+    if (id == -1) { 
+        ret = 0;
+        return true;
     }
 
     new data[E_TD_STREAMER_PLAYER_DATA];
 
     if (!_GetTextDrawData(playerid, id, data) || !data[E_TD_PROPERTIES][E_TD_IS_SELECTABLE] || !data[E_TD_VISIBLE]) {
-        return 1;
+        ret = 1;
+        return true;
     }
 
-    return TDSP_OnPlayerClickPlayerTD(playerid, PlayerText:id);
+    playertextid = PlayerText:id;
+    ret = 1;
+    return false;
 }
-
-#if defined _ALS_OnPlayerClickPlayerTD
-    #undef OnPlayerClickPlayerTextDraw
-#else
-    #define _ALS_OnPlayerClickPlayerTD
-#endif
-#define OnPlayerClickPlayerTextDraw(%0) TDSP_OnPlayerClickPlayerTD(%0) <_ALS : _ALS_go>
-
-_TDS_FORWARD TDSP_OnPlayerClickPlayerTD(playerid, PlayerText:playertextid);
 
 
 stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text[]) {
