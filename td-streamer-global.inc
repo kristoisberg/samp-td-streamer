@@ -26,7 +26,7 @@ static enum _:E_TD_STREAMER_GLOBAL_DATA {
 
 
 static Pool:TextDrawPool;
-static TextDrawStreamerID[_:MAX_TEXT_DRAWS] = {-1, ...};
+static TextDrawStreamerID[MAX_TEXT_DRAWS] = {-1, ...};
 
 
 native Text:_TDS_TextDrawCreate(Float:x, Float:y, AmxString:text) = TextDrawCreate;
@@ -78,7 +78,7 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
         return 1;
     }
 
-    TextDrawStreamerID[_:data[E_TD_INTERNAL_ID]] = id;
+    TextDrawStreamerID[data[E_TD_INTERNAL_ID]] = id;
 
     if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
         TextDrawFont(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
@@ -159,7 +159,7 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
 
 
 static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
-    TextDrawStreamerID[_:data[E_TD_INTERNAL_ID]] = -1;
+    TextDrawStreamerID[data[E_TD_INTERNAL_ID]] = -1;
 
     TextDrawDestroy(data[E_TD_INTERNAL_ID]);
 
@@ -215,7 +215,7 @@ forward public TDSG_OnPlayerDisconnect(playerid, reason);
 public TDSG_OnPlayerDisconnect(playerid, reason) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
-    for (new id; id < _:MAX_TEXT_DRAWS; id++) {
+    for (new Text:id; id < MAX_TEXT_DRAWS; id++) {
         if (TextDrawStreamerID[id] != -1) {
             _GetTextDrawData(TextDrawStreamerID[id], data);
 
@@ -242,7 +242,7 @@ public TDSG_OnPlayerClickTextDraw(&ret, playerid, Text:clickedid) {
         return false;
     }
 
-    new id = TextDrawStreamerID[_:clickedid];
+    new id = TextDrawStreamerID[clickedid];
 
     if (id == -1) {
         ret = 0;

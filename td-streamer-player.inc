@@ -26,7 +26,7 @@ static enum _:E_TD_STREAMER_PLAYER_DATA {
 
 
 static Pool:TextDrawPool[MAX_PLAYERS];
-static TextDrawStreamerID[MAX_PLAYERS][_:MAX_PLAYER_TEXT_DRAWS];
+static TextDrawStreamerID[MAX_PLAYERS][MAX_PLAYER_TEXT_DRAWS];
 
 
 native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
@@ -41,7 +41,9 @@ static stock Pool:_GetTextDrawPool(playerid) {
     if (!pool_valid(TextDrawPool[playerid])) {
         TextDrawPool[playerid] = pool_new();
 
-        memset(TextDrawStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
+        for (new PlayerText:id; id < MAX_PLAYER_TEXT_DRAWS; id++) {
+            TextDrawStreamerID[playerid][id] = -1;
+        }
     }
 
     return TextDrawPool[playerid];
@@ -84,7 +86,7 @@ static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
         return 1;
     }
 
-    TextDrawStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = id;
+    TextDrawStreamerID[playerid][data[E_TD_INTERNAL_ID]] = id;
 
     if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
         PlayerTextDrawFont(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
@@ -165,7 +167,7 @@ static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
 
 
 static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
-    TextDrawStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = -1;
+    TextDrawStreamerID[playerid][data[E_TD_INTERNAL_ID]] = -1;
 
     PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
 
@@ -238,7 +240,7 @@ public TDSP_OnPlayerDisconnect(playerid, reason) {
 
 forward public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid);
 public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid) {
-    new id = TextDrawStreamerID[playerid][_:playertextid];
+    new id = TextDrawStreamerID[playerid][playertextid];
 
     if (id == -1) { 
         ret = 0;
