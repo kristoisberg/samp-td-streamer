@@ -25,39 +25,54 @@ static enum _:E_TD_STREAMER_PLAYER_DATA {
 };
 
 
-static Pool:TDData[MAX_PLAYERS];
-static TDStreamerID[MAX_PLAYERS][_:MAX_PLAYER_TEXT_DRAWS];
+static Pool:TextDrawPool[MAX_PLAYERS];
+static TextDrawStreamerID[MAX_PLAYERS][_:MAX_PLAYER_TEXT_DRAWS];
 
 
 native PlayerText:_TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, AmxString:text) = CreatePlayerTextDraw;
 native _TDS_PlayerTextDrawSetString(playerid, PlayerText:text, AmxString:string) = PlayerTextDrawSetString;
 
 
-static stock bool:_IsValidTextDraw(playerid, id) {
+static stock Pool:_GetTextDrawPool(playerid) {
     if (!IsPlayerConnected(playerid)) {
-        return false;
+        return INVALID_POOL;
     }
 
-    return pool_valid(TDData[playerid]) && pool_has(TDData[playerid], id);
+    if (!pool_valid(TextDrawPool[playerid])) {
+        TextDrawPool[playerid] = pool_new();
+
+        memset(TextDrawStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
+    }
+
+    return TextDrawPool[playerid];
 }
 
 
-static stock bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
-    if (!_IsValidTextDraw(playerid, id)) {
+static stock bool:_IsValidTextDraw(playerid, id, &Pool:pool = INVALID_POOL) {
+    pool = _GetTextDrawPool(playerid);
+
+    return pool_valid(pool) && pool_has(pool, id);
+}
+
+
+static stock bool:_GetTextDrawData(playerid, id, data[E_TD_STREAMER_PLAYER_DATA], &Pool:pool = INVALID_POOL) {
+    if (!_IsValidTextDraw(playerid, id, pool)) {
         return false;
     }
 
-    pool_get_arr(TDData[playerid], id, data);
+    pool_get_arr(pool, id, data);
     return true;
 }
 
 
 static stock bool:_SetTextDrawData(playerid, id, const data[E_TD_STREAMER_PLAYER_DATA]) {
-    if (!_IsValidTextDraw(playerid, id)) {
+    new Pool:pool;
+
+    if (!_IsValidTextDraw(playerid, id, pool)) {
         return false;
     }
 
-    pool_set_arr(TDData[playerid], id, data);
+    pool_set_arr(pool, id, data);
     return true;
 }
 
@@ -69,7 +84,7 @@ static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
         return 1;
     }
 
-    TDStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = id;
+    TextDrawStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = id;
 
     if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
         PlayerTextDrawFont(playerid, data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
@@ -150,7 +165,7 @@ static stock _CreateTextDraw(playerid, id, data[E_TD_STREAMER_PLAYER_DATA]) {
 
 
 static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
-    TDStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = -1;
+    TextDrawStreamerID[playerid][_:data[E_TD_INTERNAL_ID]] = -1;
 
     PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
 
@@ -160,27 +175,20 @@ static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
 
 forward public _pp@on_init@TDSP();
 public _pp@on_init@TDSP() {
-    for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
-        if (IsPlayerConnected(playerid)) {
-            TDData[playerid] = pool_new();
-
-            memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
-        }
-    }
-
-    pawn_register_callback("OnPlayerConnect", "TDSP_OnPlayerConnect");
-    pawn_register_callback("OnPlayerDisconnect", "TDSP_OnPlayerConnect");
+    pawn_register_callback("OnPlayerDisconnect", "TDSP_OnPlayerDisconnect");
     pawn_register_callback("OnPlayerClickPlayerTextDraw", "TDSP_OnPlayerClickPlayerTD", handler_return | handler_args);
 }
 
 
 forward public _pp@on_exit@TDSP();
 public _pp@on_exit@TDSP() {
-    new data[E_TD_STREAMER_PLAYER_DATA];
+    new Pool:pool, data[E_TD_STREAMER_PLAYER_DATA];
 
     for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
-        if (IsPlayerConnected(playerid)) {
-            for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
+        pool = _GetTextDrawPool(playerid);
+
+        if (pool_valid(pool)) {
+            for (new Iter:id = pool_iter(pool); iter_inside(id); iter_move_next(id)) {
                 if (!iter_sizeof(id)) {
                     continue;
                 }
@@ -194,41 +202,35 @@ public _pp@on_exit@TDSP() {
                 str_delete(data[E_TD_STRING]);
             }
 
-            pool_delete(TDData[playerid]);
+            pool_delete(pool);
         }
     }
-}
-
-
-forward public TDSP_OnPlayerConnect(playerid);
-public TDSP_OnPlayerConnect(playerid) {
-    TDData[playerid] = pool_new();
-
-    memset(TDStreamerID[playerid], -1, _:MAX_PLAYER_TEXT_DRAWS);
-
-    return false;
 }
 
 
 forward public TDSP_OnPlayerDisconnect(playerid, reason);
 public TDSP_OnPlayerDisconnect(playerid, reason) {
-    new data[E_TD_STREAMER_PLAYER_DATA];
+    new Pool:pool = _GetTextDrawPool(playerid);
 
-    for (new Iter:id = pool_iter(TDData[playerid]); iter_inside(id); iter_move_next(id)) {
-        if (!iter_sizeof(id)) {
-            continue;
+    if (pool_valid(pool)) {
+        new data[E_TD_STREAMER_PLAYER_DATA];
+
+        for (new Iter:id = pool_iter(pool); iter_inside(id); iter_move_next(id)) {
+            if (!iter_sizeof(id)) {
+                continue;
+            }
+
+            iter_get_arr(id, data);
+
+            if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
+                PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
+            }
+
+            str_delete(data[E_TD_STRING]);
         }
 
-        iter_get_arr(id, data);
-
-        if (data[E_TD_INTERNAL_ID] != PlayerText:INVALID_TEXT_DRAW) {
-            PlayerTextDrawDestroy(playerid, data[E_TD_INTERNAL_ID]);
-        }
-
-        str_delete(data[E_TD_STRING]);
+        pool_delete(pool);
     }
-
-    pool_delete(TDData[playerid]);
 
     return false;
 }
@@ -236,7 +238,7 @@ public TDSP_OnPlayerDisconnect(playerid, reason) {
 
 forward public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid);
 public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid) {
-    new id = TDStreamerID[playerid][_:playertextid];
+    new id = TextDrawStreamerID[playerid][_:playertextid];
 
     if (id == -1) { 
         ret = 0;
@@ -257,7 +259,9 @@ public TDSP_OnPlayerClickPlayerTD(&ret, playerid, PlayerText:playertextid) {
 
 
 stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text[]) {
-    if (!IsPlayerConnected(playerid)) {
+    new Pool:pool = _GetTextDrawPool(playerid);
+
+    if (!pool_valid(pool)) {
         return PlayerText:INVALID_TEXT_DRAW;
     }
 
@@ -274,7 +278,7 @@ stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text
     data[E_TD_EXTRA_1] = INVALID_TEXTDRAW_EXTRA_ID;
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
-    return PlayerText:pool_add_arr(TDData[playerid], data);
+    return PlayerText:pool_add_arr(pool, data);
 }
 
 #if defined _ALS_CreatePlayerTextDraw
@@ -286,7 +290,9 @@ stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text
 
 
 stock PlayerText:CreatePlayerTextDrawStr(playerid, Float:x, Float:y, String:text) {
-    if (!IsPlayerConnected(playerid)) {
+    new Pool:pool = _GetTextDrawPool(playerid);
+
+    if (!pool_valid(pool)) {
         return PlayerText:INVALID_TEXT_DRAW;
     }
 
@@ -303,7 +309,7 @@ stock PlayerText:CreatePlayerTextDrawStr(playerid, Float:x, Float:y, String:text
     data[E_TD_EXTRA_1] = INVALID_TEXTDRAW_EXTRA_ID;
     data[E_TD_EXTRA_2] = INVALID_TEXTDRAW_EXTRA_ID;
 
-    return PlayerText:pool_add_arr(TDData[playerid], data);
+    return PlayerText:pool_add_arr(pool, data);
 }
 
 
@@ -320,9 +326,9 @@ stock TDS_IsValidPlayerTextDraw(playerid, PlayerText:text) {
 
 
 stock TDS_PlayerTextDrawDestroy(playerid, PlayerText:text) {
-    new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
+    new id = _:text, data[E_TD_STREAMER_PLAYER_DATA], Pool:pool;
 
-    if (!_GetTextDrawData(playerid, id, data)) {
+    if (!_GetTextDrawData(playerid, id, data, pool)) {
         return 0;
     }
 
@@ -331,7 +337,7 @@ stock TDS_PlayerTextDrawDestroy(playerid, PlayerText:text) {
     }
 
     str_delete(data[E_TD_STRING]);
-    pool_remove(TDData[playerid], id);
+    pool_remove(pool, id);
     return 1;
 }
 

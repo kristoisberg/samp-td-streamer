@@ -25,35 +25,48 @@ static enum _:E_TD_STREAMER_GLOBAL_DATA {
 };
 
 
-static Pool:TDData;
-static TDStreamerID[_:MAX_TEXT_DRAWS] = {-1, ...};
+static Pool:TextDrawPool;
+static TextDrawStreamerID[_:MAX_TEXT_DRAWS] = {-1, ...};
 
 
 native Text:_TDS_TextDrawCreate(Float:x, Float:y, AmxString:text) = TextDrawCreate;
 native _TDS_TextDrawSetString(Text:text, AmxString:string) = TextDrawSetString;
 
 
-static stock bool:_IsValidTextDraw(id) {
-    return pool_valid(TDData) && pool_has(TDData, id);
+static stock Pool:_GetTextDrawPool() {
+    if (!pool_valid(TextDrawPool)) {
+        TextDrawPool = pool_new();
+    }
+
+    return TextDrawPool;
 }
 
 
-static stock bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
-    if (!_IsValidTextDraw(id)) {
+static stock bool:_IsValidTextDraw(id, &Pool:pool = INVALID_POOL) {
+    pool = _GetTextDrawPool();
+
+    return pool_valid(pool) && pool_has(pool, id);
+}
+
+
+static stock bool:_GetTextDrawData(id, data[E_TD_STREAMER_GLOBAL_DATA], &Pool:pool = INVALID_POOL) {
+    if (!_IsValidTextDraw(id, pool)) {
         return false;
     }
 
-    pool_get_arr(TDData, id, data, sizeof(data));
+    pool_get_arr(pool, id, data, sizeof(data));
     return true;
 }
 
 
 static stock bool:_SetTextDrawData(id, const data[E_TD_STREAMER_GLOBAL_DATA]) {
-    if (!_IsValidTextDraw(id)) {
+    new Pool:pool;
+
+    if (!_IsValidTextDraw(id, pool)) {
         return false;
     }
 
-    pool_set_arr(TDData, id, data);
+    pool_set_arr(pool, id, data);
     return true;
 }
 
@@ -65,7 +78,7 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
         return 1;
     }
 
-    TDStreamerID[_:data[E_TD_INTERNAL_ID]] = id;
+    TextDrawStreamerID[_:data[E_TD_INTERNAL_ID]] = id;
 
     if (data[E_TD_PROPERTIES][E_TD_FONT] != TDDefaultProperties[E_TD_FONT]) {
         TextDrawFont(data[E_TD_INTERNAL_ID], data[E_TD_PROPERTIES][E_TD_FONT]);
@@ -146,7 +159,7 @@ static stock _CreateTextDraw(id, data[E_TD_STREAMER_GLOBAL_DATA]) {
 
 
 static stock _DestroyTextDraw(data[E_TD_STREAMER_GLOBAL_DATA]) {
-    TDStreamerID[_:data[E_TD_INTERNAL_ID]] = -1;
+    TextDrawStreamerID[_:data[E_TD_INTERNAL_ID]] = -1;
 
     TextDrawDestroy(data[E_TD_INTERNAL_ID]);
 
@@ -167,8 +180,6 @@ static stock bool:_IsTextDrawVisibleForAnyone(const data[E_TD_STREAMER_GLOBAL_DA
 
 forward public _pp@on_init@TDSG();
 public _pp@on_init@TDSG() {
-    TDData = pool_new();
-
     pawn_register_callback("OnPlayerDisconnect", "TDSG_OnPlayerDisconnect");
     pawn_register_callback("OnPlayerClickTextDraw", "TDSG_OnPlayerClickTextDraw", handler_return | handler_args);
 }
@@ -176,23 +187,27 @@ public _pp@on_init@TDSG() {
 
 forward public _pp@on_exit@TDSG();
 public _pp@on_exit@TDSG() {
-    new data[E_TD_STREAMER_GLOBAL_DATA];
+    new Pool:pool = _GetTextDrawPool();
 
-    for (new Iter:id = pool_iter(TDData); iter_inside(id); iter_move_next(id)) {
-        if (!iter_sizeof(id)) {
-            continue;
+    if (pool_valid(pool)) {
+        new data[E_TD_STREAMER_GLOBAL_DATA];
+
+        for (new Iter:id = pool_iter(pool); iter_inside(id); iter_move_next(id)) {
+            if (!iter_sizeof(id)) {
+                continue;
+            }
+
+            iter_get_arr(id, data);
+
+            if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
+                TextDrawDestroy(data[E_TD_INTERNAL_ID]);
+            }
+
+            str_delete(data[E_TD_STRING]);
         }
 
-        iter_get_arr(id, data);
-
-        if (data[E_TD_INTERNAL_ID] != Text:INVALID_TEXT_DRAW) {
-            TextDrawDestroy(data[E_TD_INTERNAL_ID]);
-        }
-
-        str_delete(data[E_TD_STRING]);
+        pool_delete(pool);
     }
-
-    pool_delete(TDData);
 }
 
 
@@ -201,8 +216,8 @@ public TDSG_OnPlayerDisconnect(playerid, reason) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     for (new id; id < _:MAX_TEXT_DRAWS; id++) {
-        if (TDStreamerID[id] != -1) {
-            _GetTextDrawData(TDStreamerID[id], data);
+        if (TextDrawStreamerID[id] != -1) {
+            _GetTextDrawData(TextDrawStreamerID[id], data);
 
             if (data[E_TD_VISIBLE][playerid]) {
                 data[E_TD_VISIBLE][playerid] = false;
@@ -211,7 +226,7 @@ public TDSG_OnPlayerDisconnect(playerid, reason) {
                     _DestroyTextDraw(data);
                 }
 
-                _SetTextDrawData(TDStreamerID[id], data);
+                _SetTextDrawData(TextDrawStreamerID[id], data);
             }
         }
     }
@@ -227,7 +242,7 @@ public TDSG_OnPlayerClickTextDraw(&ret, playerid, Text:clickedid) {
         return false;
     }
 
-    new id = TDStreamerID[_:clickedid];
+    new id = TextDrawStreamerID[_:clickedid];
 
     if (id == -1) {
         ret = 0;
@@ -248,6 +263,12 @@ public TDSG_OnPlayerClickTextDraw(&ret, playerid, Text:clickedid) {
 
 
 stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
+    new Pool:pool = _GetTextDrawPool();
+
+    if (!pool_valid(pool)) {
+        return Text:INVALID_TEXT_DRAW;
+    }
+
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     data[E_TD_STRING] = str_acquire(str_new(text));
@@ -264,7 +285,7 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
         data[E_TD_VISIBLE][playerid] = false;
     }
 
-    return Text:pool_add_arr(TDData, data);
+    return Text:pool_add_arr(pool, data);
 }
 
 #if defined _ALS_TextDrawCreate
@@ -276,6 +297,12 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
 
 
 stock Text:TextDrawCreateStr(Float:x, Float:y, String:text) {
+    new Pool:pool = _GetTextDrawPool();
+
+    if (!pool_valid(pool)) {
+        return Text:INVALID_TEXT_DRAW;
+    }
+
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     data[E_TD_STRING] = str_acquire(str_clone(text));
@@ -292,7 +319,7 @@ stock Text:TextDrawCreateStr(Float:x, Float:y, String:text) {
         data[E_TD_VISIBLE][playerid] = false;
     }
 
-    return Text:pool_add_arr(TDData, data);
+    return Text:pool_add_arr(pool, data);
 }
 
 
@@ -309,9 +336,9 @@ stock TDS_IsValidTextDraw(Text:text) {
 
 
 stock TDS_TextDrawDestroy(Text:text) {
-    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
+    new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA], Pool:pool;
 
-    if (!_GetTextDrawData(id, data)) {
+    if (!_GetTextDrawData(id, data, pool)) {
         return 0;
     }
 
@@ -320,7 +347,7 @@ stock TDS_TextDrawDestroy(Text:text) {
     }
 
     str_delete(data[E_TD_STRING]);
-    pool_remove(TDData, id);
+    pool_remove(pool, id);
     return 1;
 }
 
