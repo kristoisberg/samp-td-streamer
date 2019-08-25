@@ -285,7 +285,7 @@ stock PlayerText:TDS_CreatePlayerTextDraw(playerid, Float:x, Float:y, const text
 #define CreatePlayerTextDraw TDS_CreatePlayerTextDraw
 
 
-stock PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text) {
+stock PlayerText:CreatePlayerTextDrawStr(playerid, Float:x, Float:y, String:text) {
     if (!IsPlayerConnected(playerid)) {
         return PlayerText:INVALID_TEXT_DRAW;
     }
@@ -458,7 +458,7 @@ stock TDS_PlayerTextDrawGetString(playerid, PlayerText:text, string[], len = siz
 #define PlayerTextDrawGetString TDS_PlayerTextDrawGetString
 
 
-stock PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string) {
+stock PlayerTextDrawSetStringStr(playerid, PlayerText:text, String:string) {
     new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
 
     if (!_GetTextDrawData(playerid, id, data)) {
@@ -475,7 +475,7 @@ stock PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string) {
 }
 
 
-stock String:PlayerTextDrawGetString_s(playerid, PlayerText:text) {
+stock String:PlayerTextDrawGetStringStr(playerid, PlayerText:text) {
     new id = _:text, data[E_TD_STREAMER_PLAYER_DATA];
 
     if (!_GetTextDrawData(playerid, id, data)) {

@@ -50,7 +50,7 @@ The following functions are either modified or added by this library:
 
 ```pawn
 Text:TextDrawCreate(Float:x, Float:y, const text[]);
-Text:TextDrawCreate_s(Float:x, Float:y, String:text);
+Text:TextDrawCreateStr(Float:x, Float:y, String:text);
 IsValidTextDraw(Text:text);
 TextDrawDestroy(Text:text);
 TextDrawShowForPlayer(playerid, Text:text);
@@ -61,8 +61,8 @@ IsTextDrawVisibleForPlayer(playerid, Text:text);
 IsTextDrawVisibleForAnyone(Text:text);
 TextDrawSetString(Text:text, const string[]);
 TextDrawGetString(Text:text, string[], len = sizeof(string));
-TextDrawSetString_s(Text:text, String:string);
-String:TextDrawGetString_s(Text:text);
+TextDrawSetStringStr(Text:text, String:string);
+String:TextDrawGetStringStr(Text:text);
 TextDrawSetPos(Text:text, Float:x, Float:y); // TextDrawSetPosition also works if SKY is included
 TextDrawGetPos(Text:text, &Float:x, &Float:y);
 TextDrawLetterSize(Text:text, Float:x, Float:y);
@@ -103,15 +103,15 @@ TextDrawGetExtraID(Text:text, &extra1, &extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 
 ```pawn
 PlayerText:CreatePlayerTextDraw(playerid, Float:x, Float:y, const text[]);
-PlayerText:CreatePlayerTextDraw_s(playerid, Float:x, Float:y, String:text);
+PlayerText:CreatePlayerTextDrawStr(playerid, Float:x, Float:y, String:text);
 PlayerTextDrawDestroy(playerid, PlayerText:text);
 PlayerTextDrawShow(playerid, PlayerText:text);
 PlayerTextDrawHide(playerid, PlayerText:text);
 IsPlayerTextDrawVisible(playerid, PlayerText:text);
 PlayerTextDrawSetString(playerid, PlayerText:text, const string[]);
 PlayerTextDrawGetString(playerid, PlayerText:text, string[], len = sizeof(string));
-PlayerTextDrawSetString_s(playerid, PlayerText:text, String:string);
-String:PlayerTextDrawGetString_s(playerid, PlayerText:text);
+PlayerTextDrawSetStringStr(playerid, PlayerText:text, String:string);
+String:PlayerTextDrawGetStringStr(playerid, PlayerText:text);
 PlayerTextDrawSetPos(playerid, PlayerText:text, Float:x, Float:y); // PlayerTextDrawSetPosition also works if SKY is included
 PlayerTextDrawGetPos(playerid, PlayerText:text, &Float:x, &Float:y);
 PlayerTextDrawLetterSize(playerid, PlayerText:text, Float:x, Float:y);

@@ -275,7 +275,7 @@ stock Text:TDS_TextDrawCreate(Float:x, Float:y, const text[]) {
 #define TextDrawCreate TDS_TextDrawCreate
 
 
-stock Text:TextDrawCreate_s(Float:x, Float:y, String:text) {
+stock Text:TextDrawCreateStr(Float:x, Float:y, String:text) {
     new data[E_TD_STREAMER_GLOBAL_DATA];
 
     data[E_TD_STRING] = str_acquire(str_clone(text));
@@ -537,7 +537,7 @@ stock TDS_TextDrawGetString(Text:text, string[], len = sizeof(string)) {
 #define TextDrawGetString TDS_TextDrawGetString
 
 
-stock TextDrawSetString_s(Text:text, String:string) {
+stock TextDrawSetStringStr(Text:text, String:string) {
     new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
 
     if (!_GetTextDrawData(id, data)) {
@@ -554,7 +554,7 @@ stock TextDrawSetString_s(Text:text, String:string) {
 }
 
 
-stock String:TextDrawGetString_s(Text:text) {
+stock String:TextDrawGetStringStr(Text:text) {
     new id = _:text, data[E_TD_STREAMER_GLOBAL_DATA];
 
     if (!_GetTextDrawData(id, data)) {
