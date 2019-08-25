@@ -1,12 +1,12 @@
-# TextDraw Streamer* - No more textdraw limits!
+# TextDraw Streamer\* - No more textdraw limits!
 
 [![sampctl](https://shields.southcla.ws/badge/sampctl-samp--td--streamer-2f2f2f.svg?style=for-the-badge)](https://github.com/kristoisberg/samp-td-streamer)
 
 This library removes the limits on how many textdraws can be created at the same time (2048 global and 256 per-player textdraws as of 0.3.7 and 0.3.DL). The library works by only creating the textdraws when they are visible for anyone. This is a rewrite of the `PlayerTextDrawStreamer` include, originally created by theYiin and later maintained by me. Some benefits over the old include:
 
-* Support for global textdraws.
-* No limits at all - the old include used static arrays meaning that the limits were still there, they were just higher. This library uses PawnPlus for dynamic containers and dynamically allocated strings, meaning that there is no limit on how many textdraws can be created.
-* Smaller footprint on the binary size - Again, static arrays are replaced with dynamic memory, the old include increased the binary size by several megabytes and also increased the compilation time drastically, compared to this the footprint of this library is almost non-existent. 
+- Support for global textdraws.
+- No limits at all - the old include used static arrays meaning that the limits were still there, they were just higher. This library uses PawnPlus for dynamic containers and dynamically allocated strings, meaning that there is no limit on how many textdraws can be created.
+- Smaller footprint on the binary size - Again, static arrays are replaced with dynamic memory, the old include increased the binary size by several megabytes and also increased the compilation time drastically, compared to this the footprint of this library is almost non-existent.
 
 **\*** - Technically, this library does not do any streaming. However, in the SA-MP community, the name "streamer" is often associated with something that removes hardcoded limits from something, therefore this name is used to help people find the library.
 
@@ -38,11 +38,9 @@ If you wish to use it for both, you can either include both of the previous file
 
 **Notes:** This library must be the first one to hook any textdraw-related functions, otherwise a compile time error will be thrown. Neither should any textdraw-related functions or callbacks be used before the inclusion of this library. If YSF or SKY are used, they must be included before this library.
 
-
 ## Usage
 
 The include is completely plug & play, after being installed properly it should automatically do its job.
-
 
 ## Functions
 
@@ -60,6 +58,7 @@ TextDrawHideForPlayer(playerid, Text:text);
 TextDrawShowForAll(Text:text);
 TextDrawHideForAll(Text:text);
 IsTextDrawVisibleForPlayer(playerid, Text:text);
+IsTextDrawVisibleForAnyone(Text:text);
 TextDrawSetString(Text:text, const string[]);
 TextDrawGetString(Text:text, string[], len = sizeof(string));
 TextDrawSetString_s(Text:text, String:string);
@@ -99,7 +98,6 @@ TextDrawGetPreviewVehCol(Text:text, &color1, &color2);
 TextDrawSetExtraID(Text:text, extra1, extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 TextDrawGetExtraID(Text:text, &extra1, &extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 ```
-
 
 ### td-streamer-player.inc
 
@@ -149,7 +147,6 @@ PlayerTextDrawGetPreviewVehCol(playerid, PlayerText:text, &color1, &color2);
 PlayerTextDrawSetExtraID(playerid, PlayerText:text, extra1, extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 PlayerTextDrawGetExtraID(playerid, PlayerText:text, &extra1, &extra2 = INVALID_TEXTDRAW_EXTRA_ID);
 ```
-
 
 ## Testing
 
