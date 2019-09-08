@@ -178,15 +178,15 @@ static stock bool:_IsTextDrawVisibleForAnyone(const data[E_TD_STREAMER_GLOBAL_DA
 }
 
 
-forward public _pp@on_init@TDSG();
-public _pp@on_init@TDSG() {
+forward public _pp@on_init@0TDSG();
+public _pp@on_init@0TDSG() {
     pawn_register_callback("OnPlayerDisconnect", "TDSG_OnPlayerDisconnect");
     pawn_register_callback("OnPlayerClickTextDraw", "TDSG_OnPlayerClickTextDraw", handler_return | handler_args);
 }
 
 
-forward public _pp@on_exit@TDSG();
-public _pp@on_exit@TDSG() {
+forward public _pp@on_exit@0TDSG();
+public _pp@on_exit@0TDSG() {
     new Pool:pool = _GetTextDrawPool();
 
     if (pool_valid(pool)) {

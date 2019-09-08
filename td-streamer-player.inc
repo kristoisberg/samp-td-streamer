@@ -175,15 +175,15 @@ static stock _DestroyTextDraw(playerid, data[E_TD_STREAMER_PLAYER_DATA]) {
 }
 
 
-forward public _pp@on_init@TDSP();
-public _pp@on_init@TDSP() {
+forward public _pp@on_init@0TDSP();
+public _pp@on_init@0TDSP() {
     pawn_register_callback("OnPlayerDisconnect", "TDSP_OnPlayerDisconnect");
     pawn_register_callback("OnPlayerClickPlayerTextDraw", "TDSP_OnPlayerClickPlayerTD", handler_return | handler_args);
 }
 
 
-forward public _pp@on_exit@TDSP();
-public _pp@on_exit@TDSP() {
+forward public _pp@on_exit@0TDSP();
+public _pp@on_exit@0TDSP() {
     new Pool:pool, data[E_TD_STREAMER_PLAYER_DATA];
 
     for (new playerid, highest = GetPlayerPoolSize(); playerid <= highest; playerid++) {
