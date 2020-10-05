@@ -1,6 +1,8 @@
 # TextDraw Streamer\* - No more textdraw limits!
 
-[![sampctl](https://shields.southcla.ws/badge/sampctl-samp--td--streamer-2f2f2f.svg?style=for-the-badge)](https://github.com/kristoisberg/samp-td-streamer)
+[![sampctl](https://img.shields.io/badge/sampctl-samp--td--streamer-2f2f2f.svg?style=for-the-badge)](https://github.com/kristoisberg/samp-td-streamer)
+
+**Notice:** This repository is not being actively maintained anymore. If anyone wishes to continue the development of the project, please create a fork of the repository and release future versions there.
 
 This library removes the limits on how many textdraws can be created at the same time (2048 global and 256 per-player textdraws as of 0.3.7 and 0.3.DL). The library works by only creating the textdraws when they are visible for anyone. This is a rewrite of the `PlayerTextDrawStreamer` include, originally created by theYiin and later maintained by me. Some benefits over the old include:
 
